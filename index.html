@@ -173,7 +173,7 @@
     <div class="header">
         <div class="header-inner">
             <div class="logo">내전<span>.GG</span></div>
-            <div class="meta">총 10게임 · 업데이트 2026-03-19 20:00</div>
+            <div class="meta">총 10게임 · 업데이트 2026-03-19 20:03</div>
         </div>
     </div>
 
@@ -2586,46 +2586,61 @@
 
     // ── 팀 뽑기 ──────────────────────────────────────────────
     const SHEET_ID = '1iaIldNlX5rEFBMCvEBNkB1BdhWbCrPLdad3DF21ksYo';
-    const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&gid=0`;
     const ROLES = ['탑', '정글', '미드', '원딜', '서폿'];
     const MAX_DIFF = 2;
 
     let drawScores = {};
     let drawPlayers = [];
 
-    async function loadDrawData() {
+    function loadDrawData() {
         const status = document.getElementById('draw-status');
         const grid = document.getElementById('player-grid');
         status.className = 'draw-status';
         status.textContent = '스프레드시트 불러오는 중...';
         grid.innerHTML = '<div class="draw-loading">데이터 로딩 중...</div>';
-        try {
-            const res = await fetch(CSV_URL);
-            if (!res.ok) throw new Error('HTTP ' + res.status);
-            const text = await res.text();
-            const lines = text.trim().split(/\r?\n/);
-            drawScores = {};
-            drawPlayers = [];
-            for (let i = 1; i < lines.length; i++) {
-                const row = lines[i].split(',').map(s => s.replace(/^"|"$/g, '').trim());
-                if (!row[0]) break;
-                const name = row[0];
-                drawScores[name] = {
-                    '탑': parseInt(row[1]) || 0,
-                    '정글': parseInt(row[2]) || 0,
-                    '미드': parseInt(row[3]) || 0,
-                    '원딜': parseInt(row[4]) || 0,
-                    '서폿': parseInt(row[5]) || 0,
-                };
-                drawPlayers.push(name);
+
+        const cbName = '_drawCallback' + Date.now();
+        const script = document.createElement('script');
+        script.src = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=responseHandler:${cbName}&tq=${encodeURIComponent('SELECT *')}`;
+
+        window[cbName] = function(response) {
+            try {
+                const rows = response.table.rows;
+                drawScores = {};
+                drawPlayers = [];
+                for (const row of rows) {
+                    const cells = row.c;
+                    const name = cells[0]?.v;
+                    if (!name) continue;
+                    drawScores[name] = {
+                        '탑': parseInt(cells[1]?.v) || 0,
+                        '정글': parseInt(cells[2]?.v) || 0,
+                        '미드': parseInt(cells[3]?.v) || 0,
+                        '원딜': parseInt(cells[4]?.v) || 0,
+                        '서폿': parseInt(cells[5]?.v) || 0,
+                    };
+                    drawPlayers.push(name);
+                }
+                renderPlayerGrid();
+                status.textContent = `✓ ${drawPlayers.length}명 로드됨 · 점수차 ${MAX_DIFF}점 이하로 매칭`;
+            } catch(e) {
+                status.className = 'draw-status error';
+                status.textContent = '❌ 데이터 파싱 실패';
+                grid.innerHTML = '';
             }
-            renderPlayerGrid();
-            status.textContent = `✓ ${drawPlayers.length}명 로드됨 · 점수차 ${MAX_DIFF}점 이하로 매칭`;
-        } catch(e) {
+            delete window[cbName];
+            script.remove();
+        };
+
+        script.onerror = function() {
             status.className = 'draw-status error';
             status.textContent = '❌ 데이터 불러오기 실패 — 새로고침을 눌러주세요';
             grid.innerHTML = '';
-        }
+            delete window[cbName];
+            script.remove();
+        };
+
+        document.head.appendChild(script);
     }
 
     function renderPlayerGrid() {
