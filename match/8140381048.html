@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>매치 상세 - 내전.GG</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #1c1c1f; color: #e8e8e8; font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; }
+        a { color: inherit; text-decoration: none; }
+
+        .header { background: #282830; border-bottom: 1px solid #3b3b44; padding: 16px 0; }
+        .header-inner { max-width: 1080px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 20px; font-weight: 700; color: #5383e8; }
+        .logo span { color: #e8e8e8; font-weight: 400; }
+        .back-link { color: #9e9eb1; font-size: 13px; white-space: nowrap; }
+        .back-link:hover { color: #e8e8e8; }
+
+        .container { max-width: 1080px; margin: 0 auto; padding: 20px; }
+
+        /* 매치 헤더 */
+        .match-header { background: #282830; border-radius: 6px; padding: 20px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px; }
+        .match-title { font-size: 16px; font-weight: 700; }
+        .match-meta { color: #9e9eb1; font-size: 13px; margin-top: 4px; }
+        .match-highlights { display: flex; gap: 8px; flex-wrap: wrap; }
+
+        .match-ai-summary { background: #31313c; padding: 12px 16px; border-radius: 6px; font-size: 13px; line-height: 1.6; margin-bottom: 12px; word-break: keep-all; overflow-wrap: break-word; }
+        .match-ai-summary .label { color: #5383e8; font-weight: 700; font-size: 12px; margin-bottom: 4px; }
+
+        .mvp-highlight { display: flex; align-items: center; gap: 8px; background: rgba(240,178,50,0.1); border: 1px solid rgba(240,178,50,0.3); padding: 10px 14px; border-radius: 6px; flex-wrap: wrap; }
+        .mvp-highlight .badge { background: #f0b232; color: #1c1c1f; font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 10px; white-space: nowrap; }
+        .mvp-highlight .info { font-size: 14px; font-weight: 600; }
+        .mvp-highlight .score { color: #f0b232; font-size: 12px; white-space: nowrap; }
+
+        .ace-highlight { display: flex; align-items: center; gap: 8px; background: rgba(83,131,232,0.1); border: 1px solid rgba(83,131,232,0.3); padding: 10px 14px; border-radius: 6px; flex-wrap: wrap; }
+        .ace-highlight .badge { background: #5383e8; color: #fff; font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 10px; white-space: nowrap; }
+        .ace-highlight .info { font-size: 14px; font-weight: 600; }
+        .ace-highlight .score { color: #5383e8; font-size: 12px; white-space: nowrap; }
+
+        /* 스코어보드 */
+        .scoreboard { margin-bottom: 12px; }
+        .team-header { padding: 10px 16px; font-size: 13px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; }
+        .team-header.blue { background: rgba(83,131,232,0.15); color: #5383e8; border-radius: 6px 6px 0 0; }
+        .team-header.red { background: rgba(232,64,87,0.15); color: #e84057; border-radius: 6px 6px 0 0; }
+        .team-header .result { font-size: 12px; padding: 2px 8px; border-radius: 2px; font-weight: 700; }
+        .team-header .result.win { background: #5383e8; color: #fff; }
+        .team-header .result.loss { background: #e84057; color: #fff; }
+
+        .table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .player-table { width: 100%; border-collapse: collapse; background: #282830; }
+        .player-table th { text-align: left; padding: 8px 10px; font-size: 11px; color: #9e9eb1; font-weight: 600; border-bottom: 1px solid #3b3b44; white-space: nowrap; }
+        .player-table td { padding: 8px 10px; font-size: 12px; border-bottom: 1px solid #31313c; vertical-align: middle; }
+        .player-table tr:hover td { background: #31313c; }
+        .player-table tr.mvp-row td { background: rgba(240,178,50,0.05); }
+        .player-table tr.ace-row td { background: rgba(83,131,232,0.05); }
+
+        .player-cell { display: flex; align-items: center; gap: 8px; min-width: 120px; }
+        .champ-icon { width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0; }
+        .player-info { min-width: 0; }
+        .player-info .name { font-weight: 600; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px; }
+        .player-info .champ-name { color: #9e9eb1; font-size: 11px; white-space: nowrap; }
+
+        .kda-cell .ratio { font-weight: 700; font-size: 14px; }
+        .kda-cell .detail { color: #9e9eb1; font-size: 11px; white-space: nowrap; }
+        .kda-good { color: #5383e8; }
+        .kda-great { color: #f0b232; }
+        .kda-bad { color: #e84057; }
+
+        .damage-bar { width: 80px; height: 6px; background: #3b3b44; border-radius: 3px; margin-top: 3px; }
+        .damage-fill { height: 100%; border-radius: 3px; }
+        .damage-fill.blue { background: #5383e8; }
+        .damage-fill.red { background: #e84057; }
+
+        .rank-badge { display: inline-block; width: 22px; height: 22px; border-radius: 50%; text-align: center; line-height: 22px; font-size: 11px; font-weight: 700; }
+        .rank-1 { background: #f0b232; color: #1c1c1f; }
+        .rank-2 { background: #c0c0c0; color: #1c1c1f; }
+        .rank-3 { background: #cd7f32; color: #fff; }
+        .rank-other { background: #3b3b44; color: #9e9eb1; }
+
+        .insight-tag { display: inline-block; font-size: 10px; padding: 2px 6px; border-radius: 2px; background: #31313c; color: #9e9eb1; margin: 1px 2px; max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; vertical-align: middle; }
+        .insight-tag.positive { background: rgba(83,131,232,0.15); color: #5383e8; }
+        .insight-tag.negative { background: rgba(232,64,87,0.1); color: #e84057; }
+
+        .ai-score { display: inline-block; width: 32px; height: 32px; border-radius: 50%; text-align: center; line-height: 32px; font-size: 13px; font-weight: 700; }
+        .ai-score.high { background: #f0b232; color: #1c1c1f; }
+        .ai-score.good { background: #5383e8; color: #fff; }
+        .ai-score.mid { background: #00bba3; color: #fff; }
+        .ai-score.low { background: #9e9eb1; color: #1c1c1f; }
+        .ai-score.bad { background: #e84057; color: #fff; }
+
+        .mvp-icon { color: #f0b232; font-weight: 700; font-size: 11px; }
+        .ace-icon { color: #5383e8; font-weight: 700; font-size: 11px; }
+
+        @media (max-width: 768px) {
+            .container { padding: 12px; }
+            .match-header { padding: 14px; gap: 10px; }
+            .match-ai-summary { font-size: 12px; padding: 10px 12px; }
+            .player-table th, .player-table td { padding: 7px 6px; }
+            .champ-icon { width: 26px; height: 26px; }
+            .hide-mobile { display: none; }
+            .damage-bar { width: 50px; }
+            .player-info .name { max-width: 80px; }
+            .insight-tag { max-width: 100px; }
+        }
+
+        /* 모바일에서 CS 컬럼 숨김 */
+        @media (max-width: 540px) {
+            .player-table th:nth-child(5),
+            .player-table td:nth-child(5) { display: none; }
+            .player-cell { min-width: 90px; }
+            .player-info .name { max-width: 65px; }
+        }
+
+        /* 작은 화면에서 딜량 숨김 */
+        @media (max-width: 400px) {
+            .player-table th:nth-child(4),
+            .player-table td:nth-child(4) { display: none; }
+            .match-highlights { flex-direction: column; }
+            .mvp-highlight, .ace-highlight { padding: 8px 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-inner">
+            <a href="../index.html" class="logo">내전<span>.GG</span></a>
+            <a href="../index.html" class="back-link">← 전체 매치</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="match-header">
+            <div>
+                <div class="match-title">커스텀 게임</div>
+                <div class="match-meta">
+                    03/19 23:53 · 17분 22초
+                </div>
+            </div>
+            <div class="match-highlights">
+                <div class="mvp-highlight">
+                    <span class="badge">MVP</span>
+                    <span class="info">목표는아름관 (판테온)</span>
+                    <span class="score">스코어 88</span>
+                </div>
+                
+                <div class="ace-highlight">
+                    <span class="badge">ACE</span>
+                    <span class="info">양배상추 (제리)</span>
+                    <span class="score">스코어 82</span>
+                </div>
+                
+            </div>
+        </div>
+
+        <div class="match-ai-summary">
+            <div class="label">AI 경기 분석</div>
+            
+            <div style="margin-bottom:8px;line-height:1.8">17분에 한타 16번 터진 풀파이트 난투극. 시야점수 전원 0, CS 전원 극소량. 칼바람 스타일 커스텀인 듯. 골드 역전 5회로 시소게임이었는데 블루팀이 마지막 푸시에서 넥서스 먼저 밀어서 승리. 목표는아름관 판테온이 쿼드라킬+트리플킬 2번으로 난동을 부렸고, 레드팀에서는 양배상추 제리가 15킬로 혼자 분전.</div>
+            
+            <div style="color:#f0b232;margin-top:8px">🏆 MVP: 목표는아름관 판테온 13/9/25, 킬관여 80.9%. 쿼드라킬 1+트리플킬 2+더블킬 3. 분당딜 2132로 팀 딜 26.8%. 한타4에서 쿼드라킬, 한타7에서 더블킬, 한타10에서 트리플킬. 판테온 궁으로 매 한타마다 날아들어서 딜+킬 다 챙겼다. 17분에 13킬 25어시스트면 미쳤다.</div>
+            
+            
+            <div style="color:#e8e8e8;margin-top:8px;padding-top:8px;border-top:1px solid #3b3b44">
+                <span style="color:#5383e8;font-weight:700;font-size:12px">한타 하이라이트</span><br>
+                6.7분 한타4가 가장 규모가 컸다. 블루 6킬 vs 레드 5킬, 양 팀 합쳐 11킬이 터진 대규모 난전. 목표는아름관 판테온이 쿼드라킬로 레드팀 4명 처리. 양 팀 합쳐 9명이 죽는 혈전이었지만 블루팀이 1킬 차이로 이기면서 초반 리드 확보. 이후 11.2분 한타9에서 레드팀이 5킬로 반격, 14분 한타14에서도 레드 5킬로 역전했지만, 16.1분 한타15에서 블루팀이 5킬 따면서 최종 역전.
+            </div>
+            
+            
+        </div>
+
+        
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+        
+
+        <!-- 블루팀 -->
+        <div class="scoreboard">
+            <div class="team-header blue">
+                <span>블루팀 (47킬 · 64,082골드)</span>
+                <span class="result win">승리</span>
+            </div>
+            <div class="table-wrapper">
+                <table class="player-table">
+                    <thead>
+                        <tr>
+                            <th style="width:30px">#</th>
+                            <th>소환사</th>
+                            <th>KDA</th>
+                            <th>딜량</th>
+                            <th>CS</th>
+                            <th class="hide-mobile">시야</th>
+                            <th class="hide-mobile">골드</th>
+                            <th class="hide-mobile">킬관여</th>
+                            <th>AI</th>
+                            <th>평가</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                        <tr class="mvp-row">
+                            <td>
+                                <span class="rank-badge rank-2">2</span>
+                            </td>
+                            <td>
+                                <div class="player-cell">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Pantheon.png" alt="판테온" loading="lazy">
+                                    <div class="player-info">
+                                        <div class="name">
+                                            목표는아름관
+                                            <span class="mvp-icon">MVP</span>
+                                            
+                                        </div>
+                                        <div class="champ-name">판테온</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="kda-cell">
+                                    <div class="ratio kda-good">4.22</div>
+                                    <div class="detail">13/9/25</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div>37,018</div>
+                                <div class="damage-bar"><div class="damage-fill blue" style="width:100.0%"></div></div>
+                            </td>
+                            <td>
+                                <div>25</div>
+                                <div style="color:#9e9eb1;font-size:10px">1.4/분</div>
+                            </td>
+                            <td class="hide-mobile">0</td>
+                            <td class="hide-mobile">14,419</td>
+                            <td class="hide-mobile">80.9%</td>
+                            <td>
+                                
+                                
+                                <span class="ai-score good">88</span>
+                                
+                            </td>
+                            <td>
+                                
+                                <span class="insight-tag positive" title="판테온 13/9/25, 킬관여 80.9%. 쿼드라킬 1+트리플킬 2+더블킬 3. 분당딜 2132로 이 경기 딜 1등. 한타4에서 쿼드라킬, 한타10에서 트리플킬로 난동. 피해경감 41K(경감률 55%)로 탱킹도 했다. 17분에 13킬 25어시는 미쳤다.">판테온 13/9/25, 킬관여 80.9%. 쿼드라킬 1+트리플킬 2+더블킬 3. 분당딜 2132로 이 경기 딜 1등. 한타4에서 쿼드라킬, 한타10에서 트리플킬로 난동. 피해경감 41K(경감률 55%)로 탱킹도 했다. 17분에 13킬 25어시는 미쳤다.</span>
+                                
+                            </td>
+                        </tr>
+                        
+                        <tr class="">
+                            <td>
+                                <span class="rank-badge rank-other">4</span>
+                            </td>
+                            <td>
+                                <div class="player-cell">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Varus.png" alt="바루스" loading="lazy">
+                                    <div class="player-info">
+                                        <div class="name">
+                                            협곡의 소년가장
+                                            
+                                            
+                                        </div>
+                                        <div class="champ-name">바루스</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="kda-cell">
+                                    <div class="ratio kda-good">4.38</div>
+                                    <div class="detail">12/8/23</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div>33,877</div>
+                                <div class="damage-bar"><div class="damage-fill blue" style="width:92.0%"></div></div>
+                            </td>
+                            <td>
+                                <div>56</div>
+                                <div style="color:#9e9eb1;font-size:10px">3.2/분</div>
+                            </td>
+                            <td class="hide-mobile">0</td>
+                            <td class="hide-mobile">14,253</td>
+                            <td class="hide-mobile">74.5%</td>
+                            <td>
+                                
+                                
+                                <span class="ai-score good">78</span>
+                                
+                            </td>
+                            <td>
+                                
+                                <span class="insight-tag positive" title="바루스 12/8/23, 킬관여 74.5%. 분당딜 1951. 더블킬 2번+연속킬 4. 퍼스트블러드 관여. 한타4에서 킬, 한타7에서 킬, 한타15에서 더블킬. 마지막 넥서스 타워도 직접 부숨.">바루스 12/8/23, 킬관여 74.5%. 분당딜 1951. 더블킬 2번+연속킬 4. 퍼스트블러드 관여. 한타4에서 킬, 한타7에서 킬, 한타15에서 더블킬. 마지막 넥서스 타워도 직접 부숨.</span>
+                                
+                            </td>
+                        </tr>
+                        
+                        <tr class="">
+                            <td>
+                                <span class="rank-badge rank-other">6</span>
+                            </td>
+                            <td>
+                                <div class="player-cell">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Caitlyn.png" alt="케이틀린" loading="lazy">
+                                    <div class="player-info">
+                                        <div class="name">
+                                            고독한 도구라인
+                                            
+                                            
+                                        </div>
+                                        <div class="champ-name">케이틀린</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="kda-cell">
+                                    <div class="ratio kda-good">3.0</div>
+                                    <div class="detail">8/9/19</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div>23,371</div>
+                                <div class="damage-bar"><div class="damage-fill blue" style="width:63.0%"></div></div>
+                            </td>
+                            <td>
+                                <div>65</div>
+                                <div style="color:#9e9eb1;font-size:10px">3.7/분</div>
+                            </td>
+                            <td class="hide-mobile">0</td>
+                            <td class="hide-mobile">12,432</td>
+                            <td class="hide-mobile">57.4%</td>
+                            <td>
+                                
+                                
+                                <span class="ai-score mid">68</span>
+                                
+                            </td>
+                            <td>
+                                
+                                <span class="insight-tag positive" title="케이틀린 8/9/19. 트리플킬+더블킬 2번. 퍼스트블러드 관여. 분당딜 1346. 한타13에서 더블킬, 한타15에서 트리플킬로 후반 캐리. 9데스가 많지만 난투 경기라 감안. 타워딜 4.7K로 타워 파괴도 기여.">케이틀린 8/9/19. 트리플킬+더블킬 2번. 퍼스트블러드 관여. 분당딜 1346. 한타13에서 더블킬, 한타15에서 트리플킬로 후반 캐리. 9데스가 많지만 난투 경기라 감안. 타워딜 4.7K로 타워 파괴도 기여.</span>
+                                
+                            </td>
+                        </tr>
+                        
+                        <tr class="">
+                            <td>
+                                <span class="rank-badge rank-other">9</span>
+                            </td>
+                            <td>
+                                <div class="player-cell">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Camille.png" alt="카밀" loading="lazy">
+                                    <div class="player-info">
+                                        <div class="name">
+                                            JustLikeThatKB
+                                            
+                                            
+                                        </div>
+                                        <div class="champ-name">카밀</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="kda-cell">
+                                    <div class="ratio ">1.75</div>
+                                    <div class="detail">7/12/14</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div>25,914</div>
+                                <div class="damage-bar"><div class="damage-fill blue" style="width:70.0%"></div></div>
+                            </td>
+                            <td>
+                                <div>39</div>
+                                <div style="color:#9e9eb1;font-size:10px">2.2/분</div>
+                            </td>
+                            <td class="hide-mobile">0</td>
+                            <td class="hide-mobile">11,916</td>
+                            <td class="hide-mobile">44.7%</td>
+                            <td>
+                                
+                                
+                                <span class="ai-score mid">52</span>
+                                
+                            </td>
+                            <td>
+                                
+                                <span class="insight-tag positive" title="카밀 7/12/14. 12데스가 많지만 피해경감 39K(경감률 54%)로 탱킹. 분당딜 1492. 더블킬 1번. 퍼스트블러드 관여. 한타 후반부에서 킬 관여 꾸준히 했는데 너무 자주 죽었다.">카밀 7/12/14. 12데스가 많지만 피해경감 39K(경감률 54%)로 탱킹. 분당딜 1492. 더블킬 1번. 퍼스트블러드 관여. 한타 후반부에서 킬 관여 꾸준히 했는데 너무 자주 죽었다.</span>
+                                
+                            </td>
+                        </tr>
+                        
+                        <tr class="">
+                            <td>
+                                <span class="rank-badge rank-other">10</span>
+                            </td>
+                            <td>
+                                <div class="player-cell">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Vi.png" alt="바이" loading="lazy">
+                                    <div class="player-info">
+                                        <div class="name">
+                                            인스턴트 크러쉬
+                                            
+                                            
+                                        </div>
+                                        <div class="champ-name">바이</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="kda-cell">
+                                    <div class="ratio kda-bad">1.31</div>
+                                    <div class="detail">7/13/10</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div>18,087</div>
+                                <div class="damage-bar"><div class="damage-fill blue" style="width:49.0%"></div></div>
+                            </td>
+                            <td>
+                                <div>15</div>
+                                <div style="color:#9e9eb1;font-size:10px">0.9/분</div>
+                            </td>
+                            <td class="hide-mobile">0</td>
+                            <td class="hide-mobile">11,062</td>
+                            <td class="hide-mobile">36.2%</td>
+                            <td>
+                                
+                                
+                                <span class="ai-score mid">50</span>
+                                
+                            </td>
+                            <td>
+                                
+                                <span class="insight-tag positive" title="바이 7/13/10. 13데스로 제일 많이 죽었지만, 피해경감 47K(경감률 59%)로 팀 탱킹 1등. 매 한타마다 바이 궁으로 이니시하고 죽는 패턴. 희생양이지만 이 희생이 있어서 뒤에서 딜이 들어간 것.">바이 7/13/10. 13데스로 제일 많이 죽었지만, 피해경감 47K(경감률 59%)로 팀 탱킹 1등. 매 한타마다 바이 궁으로 이니시하고 죽는 패턴. 희생양이지만 이 희생이 있어서 뒤에서 딜이 들어간 것.</span>
+                                
+                            </td>
+                        </tr>
+                        
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 레드팀 -->
+        <div class="scoreboard">
+            <div class="team-header red">
+                <span>레드팀 (51킬 · 64,319골드)</span>
+                <span class="result loss">패배</span>
+            </div>
+            <div class="table-wrapper">
+                <table class="player-table">
+                    <thead>
+                        <tr>
+                            <th style="width:30px">#</th>
+                            <th>소환사</th>
+                            <th>KDA</th>
+                            <th>딜량</th>
+                            <th>CS</th>
+                            <th class="hide-mobile">시야</th>
+                            <th class="hide-mobile">골드</th>
+                            <th class="hide-mobile">킬관여</th>
+                            <th>AI</th>
+                            <th>평가</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                        <tr class="ace-row">
+                            <td>
+                                <span class="rank-badge rank-1">1</span>
+                            </td>
+                            <td>
+                                <div class="player-cell">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Zeri.png" alt="제리" loading="lazy">
+                                    <div class="player-info">
+                                        <div class="name">
+                                            양배상추
+                                            
+                                            <span class="ace-icon">ACE</span>
+                                        </div>
+                                        <div class="champ-name">제리</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="kda-cell">
+                                    <div class="ratio kda-great">6.83</div>
+                                    <div class="detail">15/6/26</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div>32,419</div>
+                                <div class="damage-bar"><div class="damage-fill red" style="width:88.0%"></div></div>
+                            </td>
+                            <td>
+                                <div>44</div>
+                                <div style="color:#9e9eb1;font-size:10px">2.5/분</div>
+                            </td>
+                            <td class="hide-mobile">0</td>
+                            <td class="hide-mobile">13,806</td>
+                            <td class="hide-mobile">80.4%</td>
+                            <td>
+                                
+                                
+                                <span class="ai-score good">82</span>
+                                
+                            </td>
+                            <td>
+                                
+                                <span class="insight-tag positive" title="제리 15/6/26, 킬관여 80.4%. 패배팀 에이스. 분당딜 1867로 딜 2등. 더블킬 2번+연속킬 4. 한타5에서 트리플킬, 한타8~9에서 연속 더블킬로 레드팀 유일한 희망. 15킬인데도 진 게 아쉽다.">제리 15/6/26, 킬관여 80.4%. 패배팀 에이스. 분당딜 1867로 딜 2등. 더블킬 2번+연속킬 4. 한타5에서 트리플킬, 한타8~9에서 연속 더블킬로 레드팀 유일한 희망. 15킬인데도 진 게 아쉽다.</span>
+                                
+                            </td>
+                        </tr>
+                        
+                        <tr class="">
+                            <td>
+                                <span class="rank-badge rank-3">3</span>
+                            </td>
+                            <td>
+                                <div class="player-cell">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Aphelios.png" alt="아펠리오스" loading="lazy">
+                                    <div class="player-info">
+                                        <div class="name">
+                                            고독한 숟
+                                            
+                                            
+                                        </div>
+                                        <div class="champ-name">아펠리오스</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="kda-cell">
+                                    <div class="ratio kda-good">4.11</div>
+                                    <div class="detail">15/9/22</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div>33,062</div>
+                                <div class="damage-bar"><div class="damage-fill red" style="width:89.0%"></div></div>
+                            </td>
+                            <td>
+                                <div>47</div>
+                                <div style="color:#9e9eb1;font-size:10px">2.7/분</div>
+                            </td>
+                            <td class="hide-mobile">0</td>
+                            <td class="hide-mobile">14,178</td>
+                            <td class="hide-mobile">72.5%</td>
+                            <td>
+                                
+                                
+                                <span class="ai-score good">75</span>
+                                
+                            </td>
+                            <td>
+                                
+                                <span class="insight-tag positive" title="아펠리오스 15/9/22, 킬관여 72.5%. 더블킬 2번+연속킬 4. 분당딜 1904. 한타에서 꾸준히 딜 넣었고 15킬이면 아펠리오스 역할 다 했다. 양배상추 제리와 함께 레드팀 딜을 양분.">아펠리오스 15/9/22, 킬관여 72.5%. 더블킬 2번+연속킬 4. 분당딜 1904. 한타에서 꾸준히 딜 넣었고 15킬이면 아펠리오스 역할 다 했다. 양배상추 제리와 함께 레드팀 딜을 양분.</span>
+                                
+                            </td>
+                        </tr>
+                        
+                        <tr class="">
+                            <td>
+                                <span class="rank-badge rank-other">5</span>
+                            </td>
+                            <td>
+                                <div class="player-cell">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Renekton.png" alt="레넥톤" loading="lazy">
+                                    <div class="player-info">
+                                        <div class="name">
+                                            황승현
+                                            
+                                            
+                                        </div>
+                                        <div class="champ-name">레넥톤</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="kda-cell">
+                                    <div class="ratio kda-good">4.22</div>
+                                    <div class="detail">12/9/26</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div>33,129</div>
+                                <div class="damage-bar"><div class="damage-fill red" style="width:89.0%"></div></div>
+                            </td>
+                            <td>
+                                <div>39</div>
+                                <div style="color:#9e9eb1;font-size:10px">2.2/분</div>
+                            </td>
+                            <td class="hide-mobile">0</td>
+                            <td class="hide-mobile">13,538</td>
+                            <td class="hide-mobile">74.5%</td>
+                            <td>
+                                
+                                
+                                <span class="ai-score good">75</span>
+                                
+                            </td>
+                            <td>
+                                
+                                <span class="insight-tag positive" title="레넥톤 12/9/26, 킬관여 74.5%. 트리플킬+더블킬 2번. 분당딜 1908. 피해경감 62K(경감률 56%)로 팀 탱킹 1등. 한타14에서 트리플킬, 한타16에서 더블킬로 후반 캐리. 개인 스탯은 좋았는데 팀이 먼저 넥서스 밀려서 패배.">레넥톤 12/9/26, 킬관여 74.5%. 트리플킬+더블킬 2번. 분당딜 1908. 피해경감 62K(경감률 56%)로 팀 탱킹 1등. 한타14에서 트리플킬, 한타16에서 더블킬로 후반 캐리. 개인 스탯은 좋았는데 팀이 먼저 넥서스 밀려서 패배.</span>
+                                
+                            </td>
+                        </tr>
+                        
+                        <tr class="">
+                            <td>
+                                <span class="rank-badge rank-other">7</span>
+                            </td>
+                            <td>
+                                <div class="player-cell">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Singed.png" alt="신지드" loading="lazy">
+                                    <div class="player-info">
+                                        <div class="name">
+                                            태연민
+                                            
+                                            
+                                        </div>
+                                        <div class="champ-name">신지드</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="kda-cell">
+                                    <div class="ratio kda-good">3.3</div>
+                                    <div class="detail">3/10/30</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div>16,071</div>
+                                <div class="damage-bar"><div class="damage-fill red" style="width:43.0%"></div></div>
+                            </td>
+                            <td>
+                                <div>31</div>
+                                <div style="color:#9e9eb1;font-size:10px">1.8/분</div>
+                            </td>
+                            <td class="hide-mobile">0</td>
+                            <td class="hide-mobile">11,111</td>
+                            <td class="hide-mobile">64.7%</td>
+                            <td>
+                                
+                                
+                                <span class="ai-score mid">55</span>
+                                
+                            </td>
+                            <td>
+                                
+                                <span class="insight-tag positive" title="신지드 3/10/30. 10데스지만 어시스트 30은 이 경기 최다! CC 48초로 팀 1등. 피해경감 26K. 신지드답게 돌아다니면서 어그로+CC 역할 충실. 킬은 못 땄지만 팀 싸움 기여도는 높았다.">신지드 3/10/30. 10데스지만 어시스트 30은 이 경기 최다! CC 48초로 팀 1등. 피해경감 26K. 신지드답게 돌아다니면서 어그로+CC 역할 충실. 킬은 못 땄지만 팀 싸움 기여도는 높았다.</span>
+                                
+                            </td>
+                        </tr>
+                        
+                        <tr class="">
+                            <td>
+                                <span class="rank-badge rank-other">8</span>
+                            </td>
+                            <td>
+                                <div class="player-cell">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Yasuo.png" alt="야스오" loading="lazy">
+                                    <div class="player-info">
+                                        <div class="name">
+                                            고독한정글동선
+                                            
+                                            
+                                        </div>
+                                        <div class="champ-name">야스오</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="kda-cell">
+                                    <div class="ratio ">2.23</div>
+                                    <div class="detail">6/13/23</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div>18,874</div>
+                                <div class="damage-bar"><div class="damage-fill red" style="width:51.0%"></div></div>
+                            </td>
+                            <td>
+                                <div>39</div>
+                                <div style="color:#9e9eb1;font-size:10px">2.2/분</div>
+                            </td>
+                            <td class="hide-mobile">0</td>
+                            <td class="hide-mobile">11,686</td>
+                            <td class="hide-mobile">56.9%</td>
+                            <td>
+                                
+                                
+                                <span class="ai-score low">45</span>
+                                
+                            </td>
+                            <td>
+                                
+                                <span class="insight-tag positive" title="야스오 6/13/23. 13데스로 많이 죽었지만 어시스트 23으로 팀 싸움 참여는 꾸준. 분당딜 1087. 야스오 특성상 들어갔다 터지는 경우가 많았을 듯.">야스오 6/13/23. 13데스로 많이 죽었지만 어시스트 23으로 팀 싸움 참여는 꾸준. 분당딜 1087. 야스오 특성상 들어갔다 터지는 경우가 많았을 듯.</span>
+                                
+                            </td>
+                        </tr>
+                        
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
