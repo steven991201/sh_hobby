@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>매치 상세 - 내전.GG</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #1c1c1f; color: #e8e8e8; font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; }
+        a { color: inherit; text-decoration: none; }
+
+        .header { background: #282830; border-bottom: 1px solid #3b3b44; padding: 16px 0; }
+        .header-inner { max-width: 1080px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 20px; font-weight: 700; color: #5383e8; }
+        .logo span { color: #e8e8e8; font-weight: 400; }
+        .back-link { color: #9e9eb1; font-size: 13px; }
+        .back-link:hover { color: #e8e8e8; }
+
+        .container { max-width: 1080px; margin: 0 auto; padding: 20px; }
+
+        /* 매치 헤더 */
+        .match-header { background: #282830; border-radius: 4px; padding: 20px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+        .match-title { font-size: 16px; font-weight: 700; }
+        .match-meta { color: #9e9eb1; font-size: 13px; margin-top: 4px; }
+        .match-ai-summary { background: #31313c; padding: 12px 16px; border-radius: 4px; font-size: 13px; line-height: 1.6; }
+        .match-ai-summary .label { color: #5383e8; font-weight: 700; font-size: 12px; margin-bottom: 4px; }
+        .mvp-highlight { display: flex; align-items: center; gap: 8px; background: rgba(240,178,50,0.1); border: 1px solid rgba(240,178,50,0.3); padding: 10px 16px; border-radius: 4px; }
+        .mvp-highlight .badge { background: #f0b232; color: #1c1c1f; font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 10px; }
+        .mvp-highlight .info { font-size: 14px; font-weight: 600; }
+        .mvp-highlight .score { color: #f0b232; font-size: 12px; }
+        .ace-highlight { display: flex; align-items: center; gap: 8px; background: rgba(83,131,232,0.1); border: 1px solid rgba(83,131,232,0.3); padding: 10px 16px; border-radius: 4px; }
+        .ace-highlight .badge { background: #5383e8; color: #fff; font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 10px; }
+        .ace-highlight .info { font-size: 14px; font-weight: 600; }
+        .ace-highlight .score { color: #5383e8; font-size: 12px; }
+
+        /* 스코어보드 */
+        .scoreboard { margin-bottom: 12px; }
+        .team-header { padding: 10px 16px; font-size: 13px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
+        .team-header.blue { background: rgba(83,131,232,0.15); color: #5383e8; border-radius: 4px 4px 0 0; }
+        .team-header.red { background: rgba(232,64,87,0.15); color: #e84057; border-radius: 4px 4px 0 0; }
+        .team-header .result { font-size: 12px; padding: 2px 8px; border-radius: 2px; font-weight: 700; }
+        .team-header .result.win { background: #5383e8; color: #fff; }
+        .team-header .result.loss { background: #e84057; color: #fff; }
+
+        .player-table { width: 100%; border-collapse: collapse; background: #282830; margin-bottom: 12px; }
+        .player-table th { text-align: left; padding: 8px 10px; font-size: 11px; color: #9e9eb1; font-weight: 600; border-bottom: 1px solid #3b3b44; }
+        .player-table td { padding: 8px 10px; font-size: 12px; border-bottom: 1px solid #31313c; vertical-align: middle; }
+        .player-table tr:hover td { background: #31313c; }
+        .player-table tr.mvp-row td { background: rgba(240,178,50,0.05); }
+
+        .player-cell { display: flex; align-items: center; gap: 8px; }
+        .champ-icon { width: 32px; height: 32px; border-radius: 50%; }
+        .player-info .name { font-weight: 600; font-size: 13px; }
+        .player-info .champ-name { color: #9e9eb1; font-size: 11px; }
+
+        .kda-cell .ratio { font-weight: 700; font-size: 14px; }
+        .kda-cell .detail { color: #9e9eb1; font-size: 11px; }
+        .kda-good { color: #5383e8; }
+        .kda-great { color: #f0b232; }
+        .kda-bad { color: #e84057; }
+
+        .damage-bar { width: 80px; height: 6px; background: #3b3b44; border-radius: 3px; margin-top: 3px; }
+        .damage-fill { height: 100%; border-radius: 3px; }
+        .damage-fill.blue { background: #5383e8; }
+        .damage-fill.red { background: #e84057; }
+
+        .rank-badge { display: inline-block; width: 22px; height: 22px; border-radius: 50%; text-align: center; line-height: 22px; font-size: 11px; font-weight: 700; }
+        .rank-1 { background: #f0b232; color: #1c1c1f; }
+        .rank-2 { background: #c0c0c0; color: #1c1c1f; }
+        .rank-3 { background: #cd7f32; color: #fff; }
+        .rank-other { background: #3b3b44; color: #9e9eb1; }
+
+        .insight-tag { display: inline-block; font-size: 10px; padding: 2px 6px; border-radius: 2px; background: #31313c; color: #9e9eb1; margin: 1px 2px; }
+        .insight-tag.positive { background: rgba(83,131,232,0.15); color: #5383e8; }
+        .insight-tag.negative { background: rgba(232,64,87,0.1); color: #e84057; }
+
+        .ai-score { display: inline-block; width: 32px; height: 32px; border-radius: 50%; text-align: center; line-height: 32px; font-size: 13px; font-weight: 700; }
+        .ai-score.high { background: #f0b232; color: #1c1c1f; }
+        .ai-score.good { background: #5383e8; color: #fff; }
+        .ai-score.mid { background: #00bba3; color: #fff; }
+        .ai-score.low { background: #9e9eb1; color: #1c1c1f; }
+        .ai-score.bad { background: #e84057; color: #fff; }
+
+        .mvp-icon { color: #f0b232; font-weight: 700; font-size: 11px; }
+        .ace-icon { color: #5383e8; font-weight: 700; font-size: 11px; }
+        tr.ace-row td { background: rgba(83,131,232,0.05); }
+
+        @media (max-width: 768px) {
+            .player-table { font-size: 11px; }
+            .player-table th, .player-table td { padding: 6px 4px; }
+            .champ-icon { width: 26px; height: 26px; }
+            .hide-mobile { display: none; }
+            .damage-bar { width: 50px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-inner">
+            <a href="index.html" class="logo">내전<span>.GG</span></a>
+            <a href="index.html" class="back-link">← 전체 매치</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="match-header">
+            <div>
+                <div class="match-title">커스텀 게임</div>
+                <div class="match-meta">
+                    03/14 01:12 · 30분 39초
+                </div>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <div class="mvp-highlight">
+                    <span class="badge">MVP</span>
+                    <span class="info">목표는아름관 (마오카이)</span>
+                    <span class="score">스코어 85</span>
+                </div>
+                
+                <div class="ace-highlight">
+                    <span class="badge">ACE</span>
+                    <span class="info">고독한 숟 (자르반 4세)</span>
+                    <span class="score">스코어 60</span>
+                </div>
+                
+            </div>
+        </div>
+
+        <div class="match-ai-summary">
+            <div class="label">AI 경기 분석</div>
+            
+            <div style="margin-bottom:8px;line-height:1.8">초반 레드팀이 퍼스트블러드+잭스 중심으로 리드했는데, 7분 한타에서 블루팀이 3킬 몰살 성공하면서 분위기 역전. 이후 블루팀이 한타를 연속으로 이기면서 25분에 9.5K 골드 차이까지 벌림. 28.7분 마지막 한타에서 레드팀이 4킬 따면서 반격 시도했지만, 이미 격차가 너무 컸다. 황승현 자야+탐켄치 탱킹 조합이 핵심이었고, 목표는아름관 마오카이가 시야+CC로 팀을 완성시켰다.</div>
+            
+            <div style="color:#f0b232;margin-top:8px">🏆 MVP: 황승현 자야 8/2/9, 분당딜 1109로 팀 딜 26.3%. 라인전 CS 78(상대 케이틀린 94)로 밀렸지만, 중반 이후 더블킬 2번+연속킬 7로 폭발. 타워딜 13.5K, 오브젝트 딜 34K로 팀의 모든 파괴를 담당. 탐켄치가 앞에서 다 막아주니까 편하게 딜 넣은 느낌이긴 한데, 그래도 자야 장인.</div>
+            
+            
+            <div style="color:#e8e8e8;margin-top:8px;padding-top:8px;border-top:1px solid #3b3b44">
+                <span style="color:#5383e8;font-weight:700;font-size:12px">한타 하이라이트</span><br>
+                17.8분 한타4가 게임의 분수령. 블루팀 5킬 vs 레드팀 2킬로 대승. 황승현 자야가 더블킬, 고독한정글동선 케넨+목표는아름관 마오카이가 각 1킬씩. 레드팀 양배상추+JustLikeThatKB+고독한 숟+태연민+초전도웃음 5명 중 3명이 죽으면서 이후 타워 3개가 연달아 무너짐. 이 한타 하나로 골드 차이가 2K에서 4K로 벌어졌다.
+            </div>
+            
+            
+        </div>
+
+        
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+        
+
+        <!-- 블루팀 -->
+        <div class="scoreboard">
+            <div class="team-header blue">
+                <span>블루팀 (29킬 · 64,232골드)</span>
+                <span class="result win">승리</span>
+            </div>
+            <table class="player-table">
+                <thead>
+                    <tr>
+                        <th style="width:30px">#</th>
+                        <th>소환사</th>
+                        <th>KDA</th>
+                        <th>딜량</th>
+                        <th>CS</th>
+                        <th class="hide-mobile">시야</th>
+                        <th class="hide-mobile">골드</th>
+                        <th class="hide-mobile">킬관여</th>
+                        <th>AI</th>
+                        <th>평가</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    <tr class="">
+                        <td>
+                            <span class="rank-badge rank-1">1</span>
+                        </td>
+                        <td>
+                            <div class="player-cell">
+                                <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Xayah.png" alt="자야" loading="lazy">
+                                <div class="player-info">
+                                    <div class="name">
+                                        황승현
+                                        
+                                        
+                                    </div>
+                                    <div class="champ-name">자야</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="kda-cell">
+                                <div class="ratio kda-great">8.5</div>
+                                <div class="detail">8/2/9</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div>34,003</div>
+                            <div class="damage-bar"><div class="damage-fill blue" style="width:100.0%"></div></div>
+                        </td>
+                        <td>
+                            <div>266</div>
+                            <div style="color:#9e9eb1;font-size:10px">8.7/분</div>
+                        </td>
+                        <td class="hide-mobile">15</td>
+                        <td class="hide-mobile">15,615</td>
+                        <td class="hide-mobile">58.6%</td>
+                        <td>
+                            
+                            
+                            <span class="ai-score good">83</span>
+                            
+                        </td>
+                        <td>
+                            
+                            <span class="insight-tag positive">자야 8/2/9, CS 분당 8.7로 파밍도 완벽. 라인전 CS 78(상대 케이틀린 94)로 밀렸지만 골드 차이 346 정도라 감당 가능 범위. 더블킬 2번+연속킬 7로 중후반 캐리. 한타4에서 더블킬, 한타6에서도 더블킬. 타워 3개 직접 부숨.</span>
+                            
+                        </td>
+                    </tr>
+                    
+                    <tr class="mvp-row">
+                        <td>
+                            <span class="rank-badge rank-2">2</span>
+                        </td>
+                        <td>
+                            <div class="player-cell">
+                                <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Maokai.png" alt="마오카이" loading="lazy">
+                                <div class="player-info">
+                                    <div class="name">
+                                        목표는아름관
+                                        <span class="mvp-icon">MVP</span>
+                                        
+                                    </div>
+                                    <div class="champ-name">마오카이</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="kda-cell">
+                                <div class="ratio kda-great">5.67</div>
+                                <div class="detail">7/3/10</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div>16,207</div>
+                            <div class="damage-bar"><div class="damage-fill blue" style="width:48.0%"></div></div>
+                        </td>
+                        <td>
+                            <div>32</div>
+                            <div style="color:#9e9eb1;font-size:10px">1.0/분</div>
+                        </td>
+                        <td class="hide-mobile">89</td>
+                        <td class="hide-mobile">10,421</td>
+                        <td class="hide-mobile">58.6%</td>
+                        <td>
+                            
+                            
+                            <span class="ai-score good">85</span>
+                            
+                        </td>
+                        <td>
+                            
+                            <span class="insight-tag positive">마오카이 서포터 7/3/10, 킬관여 58.6%. 시야점수 89, 와드설치 36개, 와드제거 8개, 제어와드 5개. CC 77초는 이 경기 전체 1등. 한타1에서 킬, 한타2에서 더블킬, 한타3에서도 킬. 초반 한타마다 킬 관여하면서 팀에 골드 넣어줌. 피해경감 24K(경감률 53%)로 탱킹도. 서포터가 7킬이면 좀 과한 거 아닌가 싶지만 마오카이니까 OK.</span>
+                            
+                        </td>
+                    </tr>
+                    
+                    <tr class="">
+                        <td>
+                            <span class="rank-badge rank-3">3</span>
+                        </td>
+                        <td>
+                            <div class="player-cell">
+                                <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/MonkeyKing.png" alt="오공" loading="lazy">
+                                <div class="player-info">
+                                    <div class="name">
+                                        고독한 미드라인
+                                        
+                                        
+                                    </div>
+                                    <div class="champ-name">오공</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="kda-cell">
+                                <div class="ratio kda-good">4.5</div>
+                                <div class="detail">5/4/13</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div>20,991</div>
+                            <div class="damage-bar"><div class="damage-fill blue" style="width:62.0%"></div></div>
+                        </td>
+                        <td>
+                            <div>213</div>
+                            <div style="color:#9e9eb1;font-size:10px">6.9/분</div>
+                        </td>
+                        <td class="hide-mobile">30</td>
+                        <td class="hide-mobile">13,475</td>
+                        <td class="hide-mobile">62.1%</td>
+                        <td>
+                            
+                            
+                            <span class="ai-score good">72</span>
+                            
+                        </td>
+                        <td>
+                            
+                            <span class="insight-tag positive">오공 정글 5/4/13, 킬관여 62.1%. 오브젝트 딜 33K로 드래곤+리프트+바론 전부 기여. 피해경감 27K(경감률 47%)로 탱킹도 했다. 한타에서 이니시+CC 26초로 팀 싸움 시작하는 역할 충실. 드래곤 2개, 바론 1개 확보. 정글로서 할 일 다 했다.</span>
+                            
+                        </td>
+                    </tr>
+                    
+                    <tr class="">
+                        <td>
+                            <span class="rank-badge rank-other">7</span>
+                        </td>
+                        <td>
+                            <div class="player-cell">
+                                <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Kennen.png" alt="케넨" loading="lazy">
+                                <div class="player-info">
+                                    <div class="name">
+                                        고독한정글동선
+                                        
+                                        
+                                    </div>
+                                    <div class="champ-name">케넨</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="kda-cell">
+                                <div class="ratio ">2.2</div>
+                                <div class="detail">6/5/5</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div>27,972</div>
+                            <div class="damage-bar"><div class="damage-fill blue" style="width:82.0%"></div></div>
+                        </td>
+                        <td>
+                            <div>209</div>
+                            <div style="color:#9e9eb1;font-size:10px">6.8/분</div>
+                        </td>
+                        <td class="hide-mobile">20</td>
+                        <td class="hide-mobile">13,344</td>
+                        <td class="hide-mobile">37.9%</td>
+                        <td>
+                            
+                            
+                            <span class="ai-score mid">58</span>
+                            
+                        </td>
+                        <td>
+                            
+                            <span class="insight-tag positive">케넨 탑 6/5/5. 라인전 CS 61(상대 잭스 51)로 10 앞섰고, 타워딜 15K로 스플릿 기여도 높았다. 더블킬 1번에 한타2에서 킬 관여. 근데 5데스는 좀 많다. 한타7에서 죽고 한타8에서도 죽으면서 후반 존재감이 떨어졌다.</span>
+                            
+                        </td>
+                    </tr>
+                    
+                    <tr class="">
+                        <td>
+                            <span class="rank-badge rank-other">8</span>
+                        </td>
+                        <td>
+                            <div class="player-cell">
+                                <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/TahmKench.png" alt="탐 켄치" loading="lazy">
+                                <div class="player-info">
+                                    <div class="name">
+                                        고독한 도구라인
+                                        
+                                        
+                                    </div>
+                                    <div class="champ-name">탐 켄치</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="kda-cell">
+                                <div class="ratio ">2.0</div>
+                                <div class="detail">3/7/11</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div>29,893</div>
+                            <div class="damage-bar"><div class="damage-fill blue" style="width:88.0%"></div></div>
+                        </td>
+                        <td>
+                            <div>171</div>
+                            <div style="color:#9e9eb1;font-size:10px">5.6/분</div>
+                        </td>
+                        <td class="hide-mobile">30</td>
+                        <td class="hide-mobile">11,377</td>
+                        <td class="hide-mobile">48.3%</td>
+                        <td>
+                            
+                            
+                            <span class="ai-score good">78</span>
+                            
+                        </td>
+                        <td>
+                            
+                            <span class="insight-tag positive">탐켄치 미드로 피해경감 86K(경감률 61%). 받은피해 54K 먹으면서 팀원 전부 살렸다. 딜량도 29K(분당 975)로 탐켄치치고 미쳤다. CC 37초에 타워딜 6.7K. 3/7/11로 7데스가 많아 보이지만, 탐켄치가 앞에서 다 받아주니까 뒤에서 자야가 편하게 딜 넣은 구조. 이 경기 숨은 MVP.</span>
+                            
+                        </td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 레드팀 -->
+        <div class="scoreboard">
+            <div class="team-header red">
+                <span>레드팀 (21킬 · 58,673골드)</span>
+                <span class="result loss">패배</span>
+            </div>
+            <table class="player-table">
+                <thead>
+                    <tr>
+                        <th style="width:30px">#</th>
+                        <th>소환사</th>
+                        <th>KDA</th>
+                        <th>딜량</th>
+                        <th>CS</th>
+                        <th class="hide-mobile">시야</th>
+                        <th class="hide-mobile">골드</th>
+                        <th class="hide-mobile">킬관여</th>
+                        <th>AI</th>
+                        <th>평가</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    <tr class="ace-row">
+                        <td>
+                            <span class="rank-badge rank-other">4</span>
+                        </td>
+                        <td>
+                            <div class="player-cell">
+                                <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/JarvanIV.png" alt="자르반 4세" loading="lazy">
+                                <div class="player-info">
+                                    <div class="name">
+                                        고독한 숟
+                                        
+                                        <span class="ace-icon">ACE</span>
+                                    </div>
+                                    <div class="champ-name">자르반 4세</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="kda-cell">
+                                <div class="ratio ">2.83</div>
+                                <div class="detail">7/6/10</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div>23,181</div>
+                            <div class="damage-bar"><div class="damage-fill red" style="width:68.0%"></div></div>
+                        </td>
+                        <td>
+                            <div>165</div>
+                            <div style="color:#9e9eb1;font-size:10px">5.4/분</div>
+                        </td>
+                        <td class="hide-mobile">32</td>
+                        <td class="hide-mobile">13,184</td>
+                        <td class="hide-mobile">81.0%</td>
+                        <td>
+                            
+                            
+                            <span class="ai-score mid">60</span>
+                            
+                        </td>
+                        <td>
+                            
+                            <span class="insight-tag positive">자르반 정글 7/6/10, 킬관여 81%. 오브젝트 딜 16K로 드래곤 2개 확보. 피해경감 47K(경감률 56%)로 탱킹. 한타4에서 1킬, 한타7에서도 1킬로 참여는 했는데, 6데스가 아쉽다. 상대 오공 정글이랑 비교하면 딜/탱킹은 비등했지만 오브젝트 장악에서 밀렸다.</span>
+                            
+                        </td>
+                    </tr>
+                    
+                    <tr class="">
+                        <td>
+                            <span class="rank-badge rank-other">5</span>
+                        </td>
+                        <td>
+                            <div class="player-cell">
+                                <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Sylas.png" alt="사일러스" loading="lazy">
+                                <div class="player-info">
+                                    <div class="name">
+                                        양배상추
+                                        
+                                        
+                                    </div>
+                                    <div class="champ-name">사일러스</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="kda-cell">
+                                <div class="ratio kda-good">3.75</div>
+                                <div class="detail">6/4/9</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div>27,530</div>
+                            <div class="damage-bar"><div class="damage-fill red" style="width:81.0%"></div></div>
+                        </td>
+                        <td>
+                            <div>177</div>
+                            <div style="color:#9e9eb1;font-size:10px">5.8/분</div>
+                        </td>
+                        <td class="hide-mobile">16</td>
+                        <td class="hide-mobile">11,437</td>
+                        <td class="hide-mobile">71.4%</td>
+                        <td>
+                            
+                            
+                            <span class="ai-score mid">58</span>
+                            
+                        </td>
+                        <td>
+                            
+                            <span class="insight-tag positive">사일러스 미드 6/4/9, 킬관여 71.4%. 라인전 CS 60(상대 탐켄치 66)으로 비등. 피해경감 29K로 사일러스치고 탱킹도 했고, 한타에서 꾸준히 킬 관여. 패배팀 치고 나쁘지 않은 퍼포먼스였지만 팀 격차가 너무 컸다.</span>
+                            
+                        </td>
+                    </tr>
+                    
+                    <tr class="">
+                        <td>
+                            <span class="rank-badge rank-other">6</span>
+                        </td>
+                        <td>
+                            <div class="player-cell">
+                                <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Jax.png" alt="잭스" loading="lazy">
+                                <div class="player-info">
+                                    <div class="name">
+                                        JustLikeThatKB
+                                        
+                                        
+                                    </div>
+                                    <div class="champ-name">잭스</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="kda-cell">
+                                <div class="ratio ">2.6</div>
+                                <div class="detail">6/5/7</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div>30,449</div>
+                            <div class="damage-bar"><div class="damage-fill red" style="width:90.0%"></div></div>
+                        </td>
+                        <td>
+                            <div>236</div>
+                            <div style="color:#9e9eb1;font-size:10px">7.7/분</div>
+                        </td>
+                        <td class="hide-mobile">11</td>
+                        <td class="hide-mobile">13,254</td>
+                        <td class="hide-mobile">61.9%</td>
+                        <td>
+                            
+                            
+                            <span class="ai-score mid">55</span>
+                            
+                        </td>
+                        <td>
+                            
+                            <span class="insight-tag positive">잭스 탑 6/5/7, 킬관여 61.9%. 퍼스트블러드 관여하면서 시작 좋았고 라인전 CS 51(상대 케넨 61)로 밀렸지만 골드 차이 큰 편은 아님. 더블킬 1번에 한타 참여 꾸준. 근데 후반 한타7에서 죽고 한타8에서 더블킬 따면서 들쭉날쭉. 잭스 스케일링 믿고 갔는데 게임이 먼저 끝남.</span>
+                            
+                        </td>
+                    </tr>
+                    
+                    <tr class="">
+                        <td>
+                            <span class="rank-badge rank-other">9</span>
+                        </td>
+                        <td>
+                            <div class="player-cell">
+                                <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Caitlyn.png" alt="케이틀린" loading="lazy">
+                                <div class="player-info">
+                                    <div class="name">
+                                        초전도웃음
+                                        
+                                        
+                                    </div>
+                                    <div class="champ-name">케이틀린</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="kda-cell">
+                                <div class="ratio kda-bad">1.0</div>
+                                <div class="detail">2/8/6</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div>26,181</div>
+                            <div class="damage-bar"><div class="damage-fill red" style="width:77.0%"></div></div>
+                        </td>
+                        <td>
+                            <div>303</div>
+                            <div style="color:#9e9eb1;font-size:10px">9.9/분</div>
+                        </td>
+                        <td class="hide-mobile">25</td>
+                        <td class="hide-mobile">13,243</td>
+                        <td class="hide-mobile">38.1%</td>
+                        <td>
+                            
+                            
+                            <span class="ai-score low">35</span>
+                            
+                        </td>
+                        <td>
+                            
+                            <span class="insight-tag positive">케이틀린 원딜 2/8/6. CS 분당 9.9로 파밍은 팀 1등인데 딜량은 26K로 기대 이하. 라인전 CS 94(상대 자야 78)로 앞섰는데 8데스 하면서 다 날림. 한타마다 포지셔닝 실수로 먼저 터졌다. CS만 먹고 딜은 못 넣은 전형적인 케이스.</span>
+                            
+                        </td>
+                    </tr>
+                    
+                    <tr class="">
+                        <td>
+                            <span class="rank-badge rank-other">10</span>
+                        </td>
+                        <td>
+                            <div class="player-cell">
+                                <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Braum.png" alt="브라움" loading="lazy">
+                                <div class="player-info">
+                                    <div class="name">
+                                        태연민
+                                        
+                                        
+                                    </div>
+                                    <div class="champ-name">브라움</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="kda-cell">
+                                <div class="ratio ">1.83</div>
+                                <div class="detail">0/6/11</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div>8,168</div>
+                            <div class="damage-bar"><div class="damage-fill red" style="width:24.0%"></div></div>
+                        </td>
+                        <td>
+                            <div>31</div>
+                            <div style="color:#9e9eb1;font-size:10px">1.0/분</div>
+                        </td>
+                        <td class="hide-mobile">67</td>
+                        <td class="hide-mobile">7,555</td>
+                        <td class="hide-mobile">52.4%</td>
+                        <td>
+                            
+                            
+                            <span class="ai-score low">48</span>
+                            
+                        </td>
+                        <td>
+                            
+                            <span class="insight-tag positive">브라움 서포터 0/6/11, 킬관여 52.4%. 시야점수 67, 와드설치 29개, 와드제거 10개. CC 48초로 브라움 역할은 했고, 피해경감 25K(경감률 51%)로 탱킹도 했다. 근데 0킬 6데스는... 상대 마오카이 서포터가 7/3/10인 거 보면 서포터 차이가 크긴 했다.</span>
+                            
+                        </td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

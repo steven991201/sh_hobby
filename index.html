@@ -1,0 +1,2498 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>내전 전적검색</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #1c1c1f; color: #e8e8e8; font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; }
+        a { color: inherit; text-decoration: none; }
+
+        .header { background: #282830; border-bottom: 1px solid #3b3b44; padding: 16px 0; }
+        .header-inner { max-width: 1080px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 20px; font-weight: 700; color: #5383e8; }
+        .logo span { color: #e8e8e8; font-weight: 400; }
+        .meta { color: #9e9eb1; font-size: 12px; }
+
+        .container { max-width: 1080px; margin: 0 auto; padding: 20px; }
+
+        /* 탭 */
+        .tabs { display: flex; gap: 0; margin-bottom: 20px; border-bottom: 2px solid #3b3b44; }
+        .tab { padding: 12px 24px; cursor: pointer; color: #9e9eb1; font-size: 14px; font-weight: 600; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.2s; }
+        .tab.active { color: #5383e8; border-bottom-color: #5383e8; }
+        .tab:hover { color: #e8e8e8; }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* 매치 카드 */
+        .match-card { background: #282830; border-radius: 4px; margin-bottom: 8px; overflow: hidden; cursor: pointer; transition: background 0.15s; }
+        .match-card:hover { background: #31313c; }
+        .match-card-inner { display: flex; align-items: stretch; }
+        .match-result { width: 4px; flex-shrink: 0; }
+        .match-result.win { background: #5383e8; }
+        .match-result.loss { background: #e84057; }
+        .match-body { flex: 1; padding: 12px 16px; }
+        .match-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .match-info { display: flex; gap: 12px; align-items: center; }
+        .match-date { color: #9e9eb1; font-size: 12px; }
+        .match-duration { color: #9e9eb1; font-size: 12px; }
+        .match-summary-text { font-size: 12px; color: #9e9eb1; }
+        .mvp-badge { background: #f0b232; color: #1c1c1f; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 10px; }
+        .match-teams { display: flex; gap: 24px; }
+        .match-team { flex: 1; }
+        .team-label { font-size: 11px; font-weight: 600; margin-bottom: 6px; padding: 2px 8px; border-radius: 2px; display: inline-block; }
+        .team-label.blue { color: #5383e8; background: rgba(83,131,232,0.1); }
+        .team-label.red { color: #e84057; background: rgba(232,64,87,0.1); }
+        .team-label .score { margin-left: 6px; }
+        .match-player { display: flex; align-items: center; gap: 6px; padding: 2px 0; font-size: 12px; }
+        .champ-icon { width: 24px; height: 24px; border-radius: 50%; }
+        .player-name { min-width: 80px; color: #e8e8e8; }
+        .player-kda { color: #9e9eb1; min-width: 70px; }
+        .player-kda-value { font-weight: 600; }
+        .kda-good { color: #5383e8; }
+        .kda-great { color: #f0b232; }
+        .kda-bad { color: #e84057; }
+        .player-mvp { font-size: 10px; color: #f0b232; font-weight: 700; }
+    .player-ace { font-size: 10px; color: #5383e8; font-weight: 700; }
+    .ace-badge { background: #5383e8; color: #fff; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 10px; }
+
+        /* 플레이어 랭킹 */
+        .ranking-table { width: 100%; border-collapse: collapse; }
+        .ranking-table th { text-align: left; padding: 10px 12px; font-size: 12px; color: #9e9eb1; font-weight: 600; border-bottom: 1px solid #3b3b44; }
+        .ranking-table td { padding: 10px 12px; font-size: 13px; border-bottom: 1px solid #31313c; }
+        .ranking-table tr:hover td { background: #31313c; }
+        .rank-num { font-weight: 700; color: #9e9eb1; width: 30px; }
+        .rank-1 { color: #f0b232; }
+        .rank-2 { color: #c0c0c0; }
+        .rank-3 { color: #cd7f32; }
+        .tier-badge { display: inline-block; width: 28px; height: 28px; border-radius: 50%; text-align: center; line-height: 28px; font-size: 13px; font-weight: 700; }
+        .tier-S { background: #f0b232; color: #1c1c1f; }
+        .tier-A { background: #5383e8; color: #fff; }
+        .tier-B { background: #00bba3; color: #fff; }
+        .tier-C { background: #9e9eb1; color: #1c1c1f; }
+        .tier-D { background: #e84057; color: #fff; }
+        .player-rank-name { font-weight: 600; }
+        .most-champs { display: flex; gap: 2px; }
+        .most-champ-icon { width: 22px; height: 22px; border-radius: 50%; border: 1px solid #3b3b44; }
+        .winrate-bar { display: inline-block; height: 6px; border-radius: 3px; min-width: 40px; }
+        .winrate-fill { display: block; height: 100%; border-radius: 3px; background: #5383e8; }
+        .winrate-bg { background: #e84057; border-radius: 3px; }
+        .insights-list { list-style: none; margin-top: 4px; }
+        .insights-list li { font-size: 11px; color: #9e9eb1; padding: 1px 0; }
+        .insights-list li::before { content: "▸ "; color: #5383e8; }
+
+        .stat-highlight { color: #5383e8; font-weight: 600; }
+        .stat-warn { color: #e84057; }
+
+        /* 반응형 */
+        @media (max-width: 768px) {
+            .match-teams { flex-direction: column; gap: 8px; }
+            .ranking-table { font-size: 12px; }
+            .ranking-table th, .ranking-table td { padding: 8px 6px; }
+            .hide-mobile { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-inner">
+            <div class="logo">내전<span>.GG</span></div>
+            <div class="meta">총 10게임 · 업데이트 2026-03-19 18:28</div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('matches')">매치 기록</div>
+            <div class="tab" onclick="switchTab('rankings')">플레이어 랭킹</div>
+        </div>
+
+        <!-- 매치 기록 -->
+        <div id="tab-matches" class="tab-content active">
+            
+            <a href="match/8139373325.html">
+            <div class="match-card">
+                <div class="match-card-inner">
+                    <div class="match-result loss"></div>
+                    <div class="match-body">
+                        <div class="match-header">
+                            <div class="match-info">
+                                <span class="match-date">03/19 02:55</span>
+                                <span class="match-duration">35분 51초</span>
+                                <span class="match-summary-text">25분까지 블루팀이 3K 리드로 우세했던 경기. 25분에 블루팀이 한타3+한타4 연승하면서 1.1K까지 앞섰는데, 28.7분 한타5에서 목표는아름관 시비르가 더블킬+황승현 리신이 더블킬로 4킬 따면서 역전. 이후 31분 바론 확보하고 32분 한타에서 시비르 쿼드라킬로 블루팀 궤멸. 35.5분 마지막 한타에서 시비르 트리플킬로 서렌더. 후반 역전극의 교과서.</span>
+                            </div>
+                            <div>
+                                <span class="mvp-badge">MVP 목표는아름관 (시비르)</span>
+                                
+                                <span class="ace-badge">ACE 고독한 숟 (바이)</span>
+                                
+                            </div>
+                        </div>
+                        <div class="match-teams">
+                            <div class="match-team">
+                                <div class="team-label blue">
+                                    블루팀 패배
+                                    <span class="score">19킬</span>
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Vi.png" alt="바이" loading="lazy">
+                                    <span class="player-name">고독한 숟</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value ">
+                                            8/5/6
+                                        </span>
+                                    </span>
+                                    
+                                    <span class="player-ace">ACE</span>
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Ahri.png" alt="아리" loading="lazy">
+                                    <span class="player-name">협곡의 소년가장</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-good">
+                                            4/4/9
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Zaahen.png" alt="자헨" loading="lazy">
+                                    <span class="player-name">JustLikeThatKB</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value ">
+                                            4/3/4
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Jinx.png" alt="징크스" loading="lazy">
+                                    <span class="player-name">장모거세게반대라스</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-bad">
+                                            1/7/9
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Leona.png" alt="레오나" loading="lazy">
+                                    <span class="player-name">심신수양</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-bad">
+                                            2/10/7
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                            </div>
+                            <div class="match-team">
+                                <div class="team-label red">
+                                    레드팀 승리
+                                    <span class="score">29킬</span>
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Sivir.png" alt="시비르" loading="lazy">
+                                    <span class="player-name">목표는아름관</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-great">
+                                            15/2/10
+                                        </span>
+                                    </span>
+                                    <span class="player-mvp">MVP</span>
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/LeeSin.png" alt="리 신" loading="lazy">
+                                    <span class="player-name">황승현</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-great">
+                                            6/3/17
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Alistar.png" alt="알리스타" loading="lazy">
+                                    <span class="player-name">보라가오리</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-great">
+                                            0/4/28
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Annie.png" alt="애니" loading="lazy">
+                                    <span class="player-name">고독한정글동선</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-good">
+                                            5/6/14
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/DrMundo.png" alt="문도 박사" loading="lazy">
+                                    <span class="player-name">고독한 도구라인</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value ">
+                                            3/4/5
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </a>
+            
+            <a href="match/8139240580.html">
+            <div class="match-card">
+                <div class="match-card-inner">
+                    <div class="match-result win"></div>
+                    <div class="match-body">
+                        <div class="match-header">
+                            <div class="match-info">
+                                <span class="match-date">03/19 00:22</span>
+                                <span class="match-duration">32분 49초</span>
+                                <span class="match-summary-text">10분까지 레드팀이 1.4K 리드했는데, 15.3분 한타에서 목표는아름관 리산드라+고독한 숟 케이틀린이 5킬 몰살시키면서 단번에 역전. 이후 블루팀이 한타 6번 중 5번을 이기면서 일방적으로 밀어붙임. 30분에 골드 차이 10.8K. 케이틀린 분당딜 1430은 내전 역대급 수치. 레드팀이 10분 리드를 5분 만에 다 날린 게 아쉽다.</span>
+                            </div>
+                            <div>
+                                <span class="mvp-badge">MVP 고독한 숟 (케이틀린)</span>
+                                
+                                <span class="ace-badge">ACE 황승현 (라칸)</span>
+                                
+                            </div>
+                        </div>
+                        <div class="match-teams">
+                            <div class="match-team">
+                                <div class="team-label blue">
+                                    블루팀 승리
+                                    <span class="score">33킬</span>
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Caitlyn.png" alt="케이틀린" loading="lazy">
+                                    <span class="player-name">고독한 숟</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-great">
+                                            12/0/10
+                                        </span>
+                                    </span>
+                                    <span class="player-mvp">MVP</span>
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Lissandra.png" alt="리산드라" loading="lazy">
+                                    <span class="player-name">목표는아름관</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-great">
+                                            10/2/15
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/LeeSin.png" alt="리 신" loading="lazy">
+                                    <span class="player-name">JustLikeThatKB</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-great">
+                                            8/1/14
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Thresh.png" alt="쓰레쉬" loading="lazy">
+                                    <span class="player-name">고독한정글동선</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-great">
+                                            1/4/21
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Sett.png" alt="세트" loading="lazy">
+                                    <span class="player-name">고독한 도구라인</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-good">
+                                            2/3/12
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                            </div>
+                            <div class="match-team">
+                                <div class="team-label red">
+                                    레드팀 패배
+                                    <span class="score">9킬</span>
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Malzahar.png" alt="말자하" loading="lazy">
+                                    <span class="player-name">보라가오리</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-bad">
+                                            3/7/4
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Renekton.png" alt="레넥톤" loading="lazy">
+                                    <span class="player-name">협곡의 소년가장</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-bad">
+                                            4/8/2
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Sivir.png" alt="시비르" loading="lazy">
+                                    <span class="player-name">장모거세게반대라스</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-bad">
+                                            1/5/4
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Ekko.png" alt="에코" loading="lazy">
+                                    <span class="player-name">심신수양</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-bad">
+                                            1/5/4
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Rakan.png" alt="라칸" loading="lazy">
+                                    <span class="player-name">황승현</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-bad">
+                                            0/8/7
+                                        </span>
+                                    </span>
+                                    
+                                    <span class="player-ace">ACE</span>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </a>
+            
+            <a href="match/8139162042.html">
+            <div class="match-card">
+                <div class="match-card-inner">
+                    <div class="match-result win"></div>
+                    <div class="match-body">
+                        <div class="match-header">
+                            <div class="match-info">
+                                <span class="match-date">03/18 23:32</span>
+                                <span class="match-duration">34분 3초</span>
+                                <span class="match-summary-text">골드 역전 8회! 내전 역대 최다 역전 기록. 10분까지 레드팀 1.2K 리드, 15분에도 레드 907 리드로 전반부는 레드팀 우세. 그런데 21분부터 블루팀이 역전하면서 25분에 3.7K, 30분에 7.7K까지 벌림. 핵심은 24~25분 구간. 한타3+한타4에서 블루팀이 연달아 승리하면서 바론+타워 다 뽑아먹었다. 레드팀 고독한 숟 자야가 혼자 분전했지만 팀이 못 받쳐줌.</span>
+                            </div>
+                            <div>
+                                <span class="mvp-badge">MVP 심신수양 (사일러스)</span>
+                                
+                                <span class="ace-badge">ACE 고독한 숟 (자야)</span>
+                                
+                            </div>
+                        </div>
+                        <div class="match-teams">
+                            <div class="match-team">
+                                <div class="team-label blue">
+                                    블루팀 승리
+                                    <span class="score">28킬</span>
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Sylas.png" alt="사일러스" loading="lazy">
+                                    <span class="player-name">심신수양</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-great">
+                                            11/4/11
+                                        </span>
+                                    </span>
+                                    <span class="player-mvp">MVP</span>
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Corki.png" alt="코르키" loading="lazy">
+                                    <span class="player-name">장모거세게반대라스</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-great">
+                                            10/3/6
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Naafiri.png" alt="나피리" loading="lazy">
+                                    <span class="player-name">보라가오리</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-good">
+                                            3/4/12
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Blitzcrank.png" alt="블리츠크랭크" loading="lazy">
+                                    <span class="player-name">황승현</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-good">
+                                            1/4/14
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Jax.png" alt="잭스" loading="lazy">
+                                    <span class="player-name">협곡의 소년가장</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-bad">
+                                            3/5/2
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                            </div>
+                            <div class="match-team">
+                                <div class="team-label red">
+                                    레드팀 패배
+                                    <span class="score">20킬</span>
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Xayah.png" alt="자야" loading="lazy">
+                                    <span class="player-name">고독한 숟</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-great">
+                                            9/3/8
+                                        </span>
+                                    </span>
+                                    
+                                    <span class="player-ace">ACE</span>
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/JarvanIV.png" alt="자르반 4세" loading="lazy">
+                                    <span class="player-name">JustLikeThatKB</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value ">
+                                            3/6/13
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Heimerdinger.png" alt="하이머딩거" loading="lazy">
+                                    <span class="player-name">고독한 도구라인</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-bad">
+                                            5/6/3
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Elise.png" alt="엘리스" loading="lazy">
+                                    <span class="player-name">고독한정글동선</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value ">
+                                            1/6/11
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Galio.png" alt="갈리오" loading="lazy">
+                                    <span class="player-name">목표는아름관</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-bad">
+                                            2/7/7
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </a>
+            
+            <a href="match/8139063179.html">
+            <div class="match-card">
+                <div class="match-card-inner">
+                    <div class="match-result win"></div>
+                    <div class="match-body">
+                        <div class="match-header">
+                            <div class="match-info">
+                                <span class="match-date">03/18 22:46</span>
+                                <span class="match-duration">30분 37초</span>
+                                <span class="match-summary-text">더블 퍼펙트의 전설. JustLikeThatKB 신짜오 11/0/11, 고독한 숟 트리스타나 13/0/5. 두 명이 동시에 0데스 퍼펙트 달성. 5분부터 블루팀이 리드하기 시작해서 15분에 5K, 25분에 8.8K, 30분에 13.4K까지 벌어짐. 한타 5번 전부 블루팀 승리. 레드팀이 이긴 한타가 단 한 번도 없다. 완전한 학살극.</span>
+                            </div>
+                            <div>
+                                <span class="mvp-badge">MVP JustLikeThatKB (신 짜오)</span>
+                                
+                                <span class="ace-badge">ACE 황승현 (마오카이)</span>
+                                
+                            </div>
+                        </div>
+                        <div class="match-teams">
+                            <div class="match-team">
+                                <div class="team-label blue">
+                                    블루팀 승리
+                                    <span class="score">39킬</span>
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/XinZhao.png" alt="신 짜오" loading="lazy">
+                                    <span class="player-name">JustLikeThatKB</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-great">
+                                            11/0/11
+                                        </span>
+                                    </span>
+                                    <span class="player-mvp">MVP</span>
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Tristana.png" alt="트리스타나" loading="lazy">
+                                    <span class="player-name">고독한 숟</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-great">
+                                            13/0/5
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Diana.png" alt="다이애나" loading="lazy">
+                                    <span class="player-name">목표는아름관</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-great">
+                                            9/3/8
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Amumu.png" alt="아무무" loading="lazy">
+                                    <span class="player-name">고독한정글동선</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-great">
+                                            0/0/23
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Malphite.png" alt="말파이트" loading="lazy">
+                                    <span class="player-name">고독한 도구라인</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-good">
+                                            6/4/6
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                            </div>
+                            <div class="match-team">
+                                <div class="team-label red">
+                                    레드팀 패배
+                                    <span class="score">7킬</span>
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Gwen.png" alt="그웬" loading="lazy">
+                                    <span class="player-name">협곡의 소년가장</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-bad">
+                                            5/9/0
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Shyvana.png" alt="쉬바나" loading="lazy">
+                                    <span class="player-name">심신수양</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-bad">
+                                            1/9/2
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/MissFortune.png" alt="미스 포츈" loading="lazy">
+                                    <span class="player-name">장모거세게반대라스</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-bad">
+                                            0/6/1
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Kassadin.png" alt="카사딘" loading="lazy">
+                                    <span class="player-name">보라가오리</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-bad">
+                                            1/8/1
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Maokai.png" alt="마오카이" loading="lazy">
+                                    <span class="player-name">황승현</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-bad">
+                                            0/7/1
+                                        </span>
+                                    </span>
+                                    
+                                    <span class="player-ace">ACE</span>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </a>
+            
+            <a href="match/8132155096.html">
+            <div class="match-card">
+                <div class="match-card-inner">
+                    <div class="match-result win"></div>
+                    <div class="match-body">
+                        <div class="match-header">
+                            <div class="match-info">
+                                <span class="match-date">03/14 02:45</span>
+                                <span class="match-duration">33분 43초</span>
+                                <span class="match-summary-text">골드 역전 4회의 시소게임. 15분까지 블루팀이 2K 리드했는데 19분 한타에서 레드팀이 3킬 따면서 20분에 레드팀 역전. 25분까지 레드팀이 1.2K 리드를 유지하다가 28.5분 한타에서 황승현 트리스타나가 트리플킬 터뜨리면서 게임이 뒤집힘. 32.7분 마지막 한타에서도 트리스타나 쿼드라킬로 마무리. 역전의 주인공은 명확하다.</span>
+                            </div>
+                            <div>
+                                <span class="mvp-badge">MVP 황승현 (트리스타나)</span>
+                                
+                                <span class="ace-badge">ACE 고독한 숟 (라칸)</span>
+                                
+                            </div>
+                        </div>
+                        <div class="match-teams">
+                            <div class="match-team">
+                                <div class="team-label blue">
+                                    블루팀 승리
+                                    <span class="score">27킬</span>
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Tristana.png" alt="트리스타나" loading="lazy">
+                                    <span class="player-name">황승현</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-great">
+                                            14/3/7
+                                        </span>
+                                    </span>
+                                    <span class="player-mvp">MVP</span>
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/LeeSin.png" alt="리 신" loading="lazy">
+                                    <span class="player-name">고독한정글동선</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-great">
+                                            5/2/17
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Amumu.png" alt="아무무" loading="lazy">
+                                    <span class="player-name">고독한 미드라인</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-good">
+                                            1/5/18
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Vladimir.png" alt="블라디미르" loading="lazy">
+                                    <span class="player-name">목표는아름관</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value ">
+                                            5/5/9
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Heimerdinger.png" alt="하이머딩거" loading="lazy">
+                                    <span class="player-name">고독한 도구라인</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-good">
+                                            2/4/12
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                            </div>
+                            <div class="match-team">
+                                <div class="team-label red">
+                                    레드팀 패배
+                                    <span class="score">19킬</span>
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Lucian.png" alt="루시안" loading="lazy">
+                                    <span class="player-name">초전도웃음</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value ">
+                                            10/5/2
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Vi.png" alt="바이" loading="lazy">
+                                    <span class="player-name">JustLikeThatKB</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value ">
+                                            4/6/9
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Rakan.png" alt="라칸" loading="lazy">
+                                    <span class="player-name">고독한 숟</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-good">
+                                            0/4/15
+                                        </span>
+                                    </span>
+                                    
+                                    <span class="player-ace">ACE</span>
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Urgot.png" alt="우르곳" loading="lazy">
+                                    <span class="player-name">태연민</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-bad">
+                                            3/8/7
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Malzahar.png" alt="말자하" loading="lazy">
+                                    <span class="player-name">양배상추</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-bad">
+                                            2/4/2
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </a>
+            
+            <a href="match/8132098856.html">
+            <div class="match-card">
+                <div class="match-card-inner">
+                    <div class="match-result win"></div>
+                    <div class="match-body">
+                        <div class="match-header">
+                            <div class="match-info">
+                                <span class="match-date">03/14 02:06</span>
+                                <span class="match-duration">22분 24초</span>
+                                <span class="match-summary-text">시작부터 블루팀이 잡았다. 5분에 이미 777골드 리드, 10분에 1.7K, 15분에 6K까지 벌어지더니 22분 서렌더. 초전도웃음 미스포츈이 10/0/4 퍼펙트 캐리하는 동안 레드팀 고독한 도구라인 초가스가 0/7/1로 녹아내리면서 미드가 완전히 뚫림. 레드팀이 이길 수 있는 구간이 단 한 번도 없었던 일방적인 경기.</span>
+                            </div>
+                            <div>
+                                <span class="mvp-badge">MVP 초전도웃음 (미스 포츈)</span>
+                                
+                                <span class="ace-badge">ACE 목표는아름관 (사이온)</span>
+                                
+                            </div>
+                        </div>
+                        <div class="match-teams">
+                            <div class="match-team">
+                                <div class="team-label blue">
+                                    블루팀 승리
+                                    <span class="score">24킬</span>
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/MissFortune.png" alt="미스 포츈" loading="lazy">
+                                    <span class="player-name">초전도웃음</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-great">
+                                            10/0/4
+                                        </span>
+                                    </span>
+                                    <span class="player-mvp">MVP</span>
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Viego.png" alt="비에고" loading="lazy">
+                                    <span class="player-name">JustLikeThatKB</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-great">
+                                            8/1/6
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Blitzcrank.png" alt="블리츠크랭크" loading="lazy">
+                                    <span class="player-name">고독한 숟</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-great">
+                                            0/1/15
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Mel.png" alt="멜" loading="lazy">
+                                    <span class="player-name">양배상추</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-good">
+                                            5/2/1
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Sett.png" alt="세트" loading="lazy">
+                                    <span class="player-name">태연민</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-bad">
+                                            1/2/1
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                            </div>
+                            <div class="match-team">
+                                <div class="team-label red">
+                                    레드팀 패배
+                                    <span class="score">6킬</span>
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Sion.png" alt="사이온" loading="lazy">
+                                    <span class="player-name">목표는아름관</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-bad">
+                                            3/3/0
+                                        </span>
+                                    </span>
+                                    
+                                    <span class="player-ace">ACE</span>
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Nidalee.png" alt="니달리" loading="lazy">
+                                    <span class="player-name">고독한정글동선</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-bad">
+                                            1/3/3
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Seraphine.png" alt="세라핀" loading="lazy">
+                                    <span class="player-name">고독한 미드라인</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-bad">
+                                            2/6/1
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Ashe.png" alt="애쉬" loading="lazy">
+                                    <span class="player-name">황승현</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-bad">
+                                            0/5/3
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Chogath.png" alt="초가스" loading="lazy">
+                                    <span class="player-name">고독한 도구라인</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-bad">
+                                            0/7/1
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </a>
+            
+            <a href="match/8132010863.html">
+            <div class="match-card">
+                <div class="match-card-inner">
+                    <div class="match-result win"></div>
+                    <div class="match-body">
+                        <div class="match-header">
+                            <div class="match-info">
+                                <span class="match-date">03/14 01:12</span>
+                                <span class="match-duration">30분 39초</span>
+                                <span class="match-summary-text">초반 레드팀이 퍼스트블러드+잭스 중심으로 리드했는데, 7분 한타에서 블루팀이 3킬 몰살 성공하면서 분위기 역전. 이후 블루팀이 한타를 연속으로 이기면서 25분에 9.5K 골드 차이까지 벌림. 28.7분 마지막 한타에서 레드팀이 4킬 따면서 반격 시도했지만, 이미 격차가 너무 컸다. 황승현 자야+탐켄치 탱킹 조합이 핵심이었고, 목표는아름관 마오카이가 시야+CC로 팀을 완성시켰다.</span>
+                            </div>
+                            <div>
+                                <span class="mvp-badge">MVP 목표는아름관 (마오카이)</span>
+                                
+                                <span class="ace-badge">ACE 고독한 숟 (자르반 4세)</span>
+                                
+                            </div>
+                        </div>
+                        <div class="match-teams">
+                            <div class="match-team">
+                                <div class="team-label blue">
+                                    블루팀 승리
+                                    <span class="score">29킬</span>
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Xayah.png" alt="자야" loading="lazy">
+                                    <span class="player-name">황승현</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-great">
+                                            8/2/9
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Maokai.png" alt="마오카이" loading="lazy">
+                                    <span class="player-name">목표는아름관</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-great">
+                                            7/3/10
+                                        </span>
+                                    </span>
+                                    <span class="player-mvp">MVP</span>
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/MonkeyKing.png" alt="오공" loading="lazy">
+                                    <span class="player-name">고독한 미드라인</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-good">
+                                            5/4/13
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Kennen.png" alt="케넨" loading="lazy">
+                                    <span class="player-name">고독한정글동선</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value ">
+                                            6/5/5
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/TahmKench.png" alt="탐 켄치" loading="lazy">
+                                    <span class="player-name">고독한 도구라인</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value ">
+                                            3/7/11
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                            </div>
+                            <div class="match-team">
+                                <div class="team-label red">
+                                    레드팀 패배
+                                    <span class="score">21킬</span>
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/JarvanIV.png" alt="자르반 4세" loading="lazy">
+                                    <span class="player-name">고독한 숟</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value ">
+                                            7/6/10
+                                        </span>
+                                    </span>
+                                    
+                                    <span class="player-ace">ACE</span>
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Sylas.png" alt="사일러스" loading="lazy">
+                                    <span class="player-name">양배상추</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-good">
+                                            6/4/9
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Jax.png" alt="잭스" loading="lazy">
+                                    <span class="player-name">JustLikeThatKB</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value ">
+                                            6/5/7
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Caitlyn.png" alt="케이틀린" loading="lazy">
+                                    <span class="player-name">초전도웃음</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-bad">
+                                            2/8/6
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Braum.png" alt="브라움" loading="lazy">
+                                    <span class="player-name">태연민</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value ">
+                                            0/6/11
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </a>
+            
+            <a href="match/8131887148.html">
+            <div class="match-card">
+                <div class="match-card-inner">
+                    <div class="match-result loss"></div>
+                    <div class="match-body">
+                        <div class="match-header">
+                            <div class="match-info">
+                                <span class="match-date">03/14 00:06</span>
+                                <span class="match-duration">26분 1초</span>
+                                <span class="match-summary-text">10분까지 블루팀이 1K 리드로 앞섰는데, 13분 한타에서 레드팀이 3킬 몰살 성공하면서 역전. 이후 고독한 미드라인 요릭이 스플릿으로 타워를 씹어먹기 시작하면서 15분부터 게임이 끝났다. 20분에 골드 차이 8.3K, 결국 26분 서렌더. 초전도웃음 바루스가 혼자 분전했지만 팀이 너무 못 받쳐줬다.</span>
+                            </div>
+                            <div>
+                                <span class="mvp-badge">MVP 고독한 미드라인 (요릭)</span>
+                                
+                                <span class="ace-badge">ACE 초전도웃음 (바루스)</span>
+                                
+                            </div>
+                        </div>
+                        <div class="match-teams">
+                            <div class="match-team">
+                                <div class="team-label blue">
+                                    블루팀 패배
+                                    <span class="score">14킬</span>
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Varus.png" alt="바루스" loading="lazy">
+                                    <span class="player-name">초전도웃음</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-good">
+                                            6/3/6
+                                        </span>
+                                    </span>
+                                    
+                                    <span class="player-ace">ACE</span>
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Aurora.png" alt="오로라" loading="lazy">
+                                    <span class="player-name">양배상추</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-bad">
+                                            3/4/2
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/XinZhao.png" alt="신 짜오" loading="lazy">
+                                    <span class="player-name">JustLikeThatKB</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-bad">
+                                            2/8/4
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Ambessa.png" alt="암베사" loading="lazy">
+                                    <span class="player-name">고독한 숟</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-bad">
+                                            2/4/1
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Thresh.png" alt="쓰레쉬" loading="lazy">
+                                    <span class="player-name">태연민</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-bad">
+                                            1/6/4
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                            </div>
+                            <div class="match-team">
+                                <div class="team-label red">
+                                    레드팀 승리
+                                    <span class="score">25킬</span>
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Lillia.png" alt="릴리아" loading="lazy">
+                                    <span class="player-name">고독한정글동선</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-great">
+                                            6/1/11
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Yorick.png" alt="요릭" loading="lazy">
+                                    <span class="player-name">고독한 미드라인</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-great">
+                                            9/1/4
+                                        </span>
+                                    </span>
+                                    <span class="player-mvp">MVP</span>
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Jhin.png" alt="진" loading="lazy">
+                                    <span class="player-name">황승현</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-great">
+                                            8/3/8
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Leona.png" alt="레오나" loading="lazy">
+                                    <span class="player-name">목표는아름관</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value ">
+                                            1/6/11
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Galio.png" alt="갈리오" loading="lazy">
+                                    <span class="player-name">고독한 도구라인</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-good">
+                                            1/3/8
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </a>
+            
+            <a href="match/8131789129.html">
+            <div class="match-card">
+                <div class="match-card-inner">
+                    <div class="match-result win"></div>
+                    <div class="match-body">
+                        <div class="match-header">
+                            <div class="match-info">
+                                <span class="match-date">03/13 23:26</span>
+                                <span class="match-duration">25분 3초</span>
+                                <span class="match-summary-text">고독한정글동선 피즈의 원맨쇼. 4분 한타에서 퍼스트블러드 따고 시작해서 25분까지 12킬 0데스 달성. 5분에 이미 1.5K 골드 리드, 10분에 3.3K, 20분에 6.6K까지 벌어지더니 25분에 12K 차이로 서렌더. 레드팀이 한 게 딱히 없다. 한타 2번 다 블루팀이 이기고, 오브젝트도 전부 블루팀이 먹었다. 그냥 학살이었다.</span>
+                            </div>
+                            <div>
+                                <span class="mvp-badge">MVP 고독한정글동선 (피즈)</span>
+                                
+                                <span class="ace-badge">ACE 태연민 (노틸러스)</span>
+                                
+                            </div>
+                        </div>
+                        <div class="match-teams">
+                            <div class="match-team">
+                                <div class="team-label blue">
+                                    블루팀 승리
+                                    <span class="score">23킬</span>
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Fizz.png" alt="피즈" loading="lazy">
+                                    <span class="player-name">고독한정글동선</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-great">
+                                            12/0/3
+                                        </span>
+                                    </span>
+                                    <span class="player-mvp">MVP</span>
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Karma.png" alt="카르마" loading="lazy">
+                                    <span class="player-name">목표는아름관</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-great">
+                                            2/0/18
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Ezreal.png" alt="이즈리얼" loading="lazy">
+                                    <span class="player-name">황승현</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-great">
+                                            5/2/9
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Shen.png" alt="쉔" loading="lazy">
+                                    <span class="player-name">고독한 도구라인</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-great">
+                                            2/2/8
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Malphite.png" alt="말파이트" loading="lazy">
+                                    <span class="player-name">고독한 미드라인</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-great">
+                                            2/1/4
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                            </div>
+                            <div class="match-team">
+                                <div class="team-label red">
+                                    레드팀 패배
+                                    <span class="score">5킬</span>
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Graves.png" alt="그레이브즈" loading="lazy">
+                                    <span class="player-name">JustLikeThatKB</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-bad">
+                                            3/6/2
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Corki.png" alt="코르키" loading="lazy">
+                                    <span class="player-name">초전도웃음</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-bad">
+                                            1/5/1
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Lissandra.png" alt="리산드라" loading="lazy">
+                                    <span class="player-name">양배상추</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-bad">
+                                            1/5/1
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Mordekaiser.png" alt="모데카이저" loading="lazy">
+                                    <span class="player-name">고독한 숟</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-bad">
+                                            0/3/1
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Nautilus.png" alt="노틸러스" loading="lazy">
+                                    <span class="player-name">태연민</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-bad">
+                                            0/4/1
+                                        </span>
+                                    </span>
+                                    
+                                    <span class="player-ace">ACE</span>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </a>
+            
+            <a href="match/8103784787.html">
+            <div class="match-card">
+                <div class="match-card-inner">
+                    <div class="match-result loss"></div>
+                    <div class="match-body">
+                        <div class="match-header">
+                            <div class="match-info">
+                                <span class="match-date">02/23 20:33</span>
+                                <span class="match-duration">37분 49초</span>
+                                <span class="match-summary-text">골드 역전만 5번, 한타 9번의 피 튀기는 혈전. 10분까지 골드 거의 동률이었는데 14분 이후 레드팀이 오브젝트 장악하면서 꾸준히 리드. 32분에 블루팀이 미스포츈 트리플킬+바론으로 역전 분위기 만들었는데, 36.7분 마지막 한타에서 황승현 자야+볼리베어가 블루팀 5명 전멸시키면서 넥서스 직행. 블루팀 입장에서 바론까지 먹고 못 끝낸 게 한이 맺힐 듯.</span>
+                            </div>
+                            <div>
+                                <span class="mvp-badge">MVP 황승현 (자야)</span>
+                                
+                                <span class="ace-badge">ACE 고독한정글동선 (모르가나)</span>
+                                
+                            </div>
+                        </div>
+                        <div class="match-teams">
+                            <div class="match-team">
+                                <div class="team-label blue">
+                                    블루팀 패배
+                                    <span class="score">33킬</span>
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Akali.png" alt="아칼리" loading="lazy">
+                                    <span class="player-name">진짜누런수컷</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value ">
+                                            10/8/8
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Morgana.png" alt="모르가나" loading="lazy">
+                                    <span class="player-name">고독한정글동선</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-good">
+                                            4/7/18
+                                        </span>
+                                    </span>
+                                    
+                                    <span class="player-ace">ACE</span>
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Naafiri.png" alt="나피리" loading="lazy">
+                                    <span class="player-name">목표는아름관</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value ">
+                                            10/5/3
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Maokai.png" alt="마오카이" loading="lazy">
+                                    <span class="player-name">양배상추</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-good">
+                                            1/5/20
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/MissFortune.png" alt="미스 포츈" loading="lazy">
+                                    <span class="player-name">고독한 미드라인</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value ">
+                                            8/8/4
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                            </div>
+                            <div class="match-team">
+                                <div class="team-label red">
+                                    레드팀 승리
+                                    <span class="score">33킬</span>
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Xayah.png" alt="자야" loading="lazy">
+                                    <span class="player-name">황승현</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-good">
+                                            10/5/10
+                                        </span>
+                                    </span>
+                                    <span class="player-mvp">MVP</span>
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Syndra.png" alt="신드라" loading="lazy">
+                                    <span class="player-name">고독한 숟</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-great">
+                                            7/3/8
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Volibear.png" alt="볼리베어" loading="lazy">
+                                    <span class="player-name">고독한 도구라인</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value ">
+                                            8/9/7
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Karma.png" alt="카르마" loading="lazy">
+                                    <span class="player-name">협곡의 소년가장</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value ">
+                                            3/8/14
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                                <div class="match-player">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Gnar.png" alt="나르" loading="lazy">
+                                    <span class="player-name">인스턴트 크러쉬</span>
+                                    <span class="player-kda">
+                                        <span class="player-kda-value kda-bad">
+                                            5/8/6
+                                        </span>
+                                    </span>
+                                    
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </a>
+            
+        </div>
+
+        <!-- 플레이어 랭킹 -->
+        <div id="tab-rankings" class="tab-content">
+            <table class="ranking-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>티어</th>
+                        <th>소환사</th>
+                        <th>게임</th>
+                        <th>승률</th>
+                        <th>KDA</th>
+                        <th>평균 딜량</th>
+                        <th class="hide-mobile">MVP</th>
+                        <th class="hide-mobile">모스트</th>
+                        <th class="hide-mobile">AI 평가</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    <tr>
+                        <td class="rank-num rank-1">1</td>
+                        <td><span class="tier-badge tier-A">A</span></td>
+                        <td class="player-rank-name">진짜누런수컷</td>
+                        <td>1게임</td>
+                        <td>
+                            <div>
+                                <span class="stat-warn">0.0%</span>
+                                <span style="color:#9e9eb1;font-size:11px">(0승 1패)</span>
+                            </div>
+                            <div class="winrate-bg" style="width:60px">
+                                <span class="winrate-fill" style="width:0.0%"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="" style="font-weight:600">
+                                2.25
+                            </span>
+                            <span style="color:#9e9eb1;font-size:11px">10.0/8.0/8.0</span>
+                        </td>
+                        <td>38,070</td>
+                        <td class="hide-mobile">
+                            
+                            <span style="color:#9e9eb1">-</span>
+                            
+                        </td>
+                        <td class="hide-mobile">
+                            <div class="most-champs">
+                                
+                                <img class="most-champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Akali.png" alt="아칼리" title="아칼리 (1판 0승)" loading="lazy">
+                                
+                            </div>
+                        </td>
+                        <td class="hide-mobile">
+                            <ul class="insights-list">
+                                
+                                <li>승률 0.0%... 힘든 시즌</li>
+                                
+                                <li>팀의 딜링 머신</li>
+                                
+                            </ul>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td class="rank-num rank-2">2</td>
+                        <td><span class="tier-badge tier-S">S</span></td>
+                        <td class="player-rank-name">목표는아름관</td>
+                        <td>10게임</td>
+                        <td>
+                            <div>
+                                <span class="stat-highlight">70.0%</span>
+                                <span style="color:#9e9eb1;font-size:11px">(7승 3패)</span>
+                            </div>
+                            <div class="winrate-bg" style="width:60px">
+                                <span class="winrate-fill" style="width:70.0%"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="kda-great" style="font-weight:600">
+                                4.31
+                            </span>
+                            <span style="color:#9e9eb1;font-size:11px">6.4/3.6/9.1</span>
+                        </td>
+                        <td>21,658</td>
+                        <td class="hide-mobile">
+                            
+                            <span style="color:#f0b232;font-weight:600">1회</span>
+                            
+                        </td>
+                        <td class="hide-mobile">
+                            <div class="most-champs">
+                                
+                                <img class="most-champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Sivir.png" alt="시비르" title="시비르 (1판 1승)" loading="lazy">
+                                
+                                <img class="most-champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Lissandra.png" alt="리산드라" title="리산드라 (1판 1승)" loading="lazy">
+                                
+                                <img class="most-champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Galio.png" alt="갈리오" title="갈리오 (1판 0승)" loading="lazy">
+                                
+                            </div>
+                        </td>
+                        <td class="hide-mobile">
+                            <ul class="insights-list">
+                                
+                                <li>승률 70.0%, 승리 보증 수표</li>
+                                
+                                <li>평균 KDA 4.31, 안정적인 플레이</li>
+                                
+                            </ul>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td class="rank-num rank-3">3</td>
+                        <td><span class="tier-badge tier-S">S</span></td>
+                        <td class="player-rank-name">고독한정글동선</td>
+                        <td>10게임</td>
+                        <td>
+                            <div>
+                                <span class="stat-highlight">70.0%</span>
+                                <span style="color:#9e9eb1;font-size:11px">(7승 3패)</span>
+                            </div>
+                            <div class="winrate-bg" style="width:60px">
+                                <span class="winrate-fill" style="width:70.0%"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="kda-great" style="font-weight:600">
+                                4.91
+                            </span>
+                            <span style="color:#9e9eb1;font-size:11px">4.1/3.4/12.6</span>
+                        </td>
+                        <td>16,619</td>
+                        <td class="hide-mobile">
+                            
+                            <span style="color:#f0b232;font-weight:600">2회</span>
+                            
+                        </td>
+                        <td class="hide-mobile">
+                            <div class="most-champs">
+                                
+                                <img class="most-champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Annie.png" alt="애니" title="애니 (1판 1승)" loading="lazy">
+                                
+                                <img class="most-champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Thresh.png" alt="쓰레쉬" title="쓰레쉬 (1판 1승)" loading="lazy">
+                                
+                                <img class="most-champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Elise.png" alt="엘리스" title="엘리스 (1판 0승)" loading="lazy">
+                                
+                            </div>
+                        </td>
+                        <td class="hide-mobile">
+                            <ul class="insights-list">
+                                
+                                <li>승률 70.0%, 승리 보증 수표</li>
+                                
+                                <li>평균 KDA 4.91, 안정적인 플레이</li>
+                                
+                            </ul>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td class="rank-num ">4</td>
+                        <td><span class="tier-badge tier-A">A</span></td>
+                        <td class="player-rank-name">고독한 숟</td>
+                        <td>10게임</td>
+                        <td>
+                            <div>
+                                <span class="stat-warn">40.0%</span>
+                                <span style="color:#9e9eb1;font-size:11px">(4승 6패)</span>
+                            </div>
+                            <div class="winrate-bg" style="width:60px">
+                                <span class="winrate-fill" style="width:40.0%"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="kda-great" style="font-weight:600">
+                                4.72
+                            </span>
+                            <span style="color:#9e9eb1;font-size:11px">5.8/2.9/7.9</span>
+                        </td>
+                        <td>22,846</td>
+                        <td class="hide-mobile">
+                            
+                            <span style="color:#f0b232;font-weight:600">1회</span>
+                            
+                        </td>
+                        <td class="hide-mobile">
+                            <div class="most-champs">
+                                
+                                <img class="most-champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Vi.png" alt="바이" title="바이 (1판 0승)" loading="lazy">
+                                
+                                <img class="most-champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Caitlyn.png" alt="케이틀린" title="케이틀린 (1판 1승)" loading="lazy">
+                                
+                                <img class="most-champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Xayah.png" alt="자야" title="자야 (1판 0승)" loading="lazy">
+                                
+                            </div>
+                        </td>
+                        <td class="hide-mobile">
+                            <ul class="insights-list">
+                                
+                                <li>평균 KDA 4.72, 안정적인 플레이</li>
+                                
+                                <li>팀의 딜링 머신</li>
+                                
+                            </ul>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td class="rank-num ">5</td>
+                        <td><span class="tier-badge tier-A">A</span></td>
+                        <td class="player-rank-name">JustLikeThatKB</td>
+                        <td>9게임</td>
+                        <td>
+                            <div>
+                                <span class="stat-warn">33.3%</span>
+                                <span style="color:#9e9eb1;font-size:11px">(3승 6패)</span>
+                            </div>
+                            <div class="winrate-bg" style="width:60px">
+                                <span class="winrate-fill" style="width:33.3%"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="kda-good" style="font-weight:600">
+                                3.31
+                            </span>
+                            <span style="color:#9e9eb1;font-size:11px">5.4/4.0/7.8</span>
+                        </td>
+                        <td>21,157</td>
+                        <td class="hide-mobile">
+                            
+                            <span style="color:#f0b232;font-weight:600">1회</span>
+                            
+                        </td>
+                        <td class="hide-mobile">
+                            <div class="most-champs">
+                                
+                                <img class="most-champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/XinZhao.png" alt="신 짜오" title="신 짜오 (2판 1승)" loading="lazy">
+                                
+                                <img class="most-champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Zaahen.png" alt="자헨" title="자헨 (1판 0승)" loading="lazy">
+                                
+                                <img class="most-champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/LeeSin.png" alt="리 신" title="리 신 (1판 1승)" loading="lazy">
+                                
+                            </div>
+                        </td>
+                        <td class="hide-mobile">
+                            <ul class="insights-list">
+                                
+                                <li>승률 33.3%... 힘든 시즌</li>
+                                
+                                <li>팀의 딜링 머신</li>
+                                
+                            </ul>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td class="rank-num ">6</td>
+                        <td><span class="tier-badge tier-S">S</span></td>
+                        <td class="player-rank-name">황승현</td>
+                        <td>10게임</td>
+                        <td>
+                            <div>
+                                <span class="stat-highlight">70.0%</span>
+                                <span style="color:#9e9eb1;font-size:11px">(7승 3패)</span>
+                            </div>
+                            <div class="winrate-bg" style="width:60px">
+                                <span class="winrate-fill" style="width:70.0%"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="kda-good" style="font-weight:600">
+                                3.26
+                            </span>
+                            <span style="color:#9e9eb1;font-size:11px">5.2/4.2/8.5</span>
+                        </td>
+                        <td>19,303</td>
+                        <td class="hide-mobile">
+                            
+                            <span style="color:#f0b232;font-weight:600">3회</span>
+                            
+                        </td>
+                        <td class="hide-mobile">
+                            <div class="most-champs">
+                                
+                                <img class="most-champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Xayah.png" alt="자야" title="자야 (2판 2승)" loading="lazy">
+                                
+                                <img class="most-champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/LeeSin.png" alt="리 신" title="리 신 (1판 1승)" loading="lazy">
+                                
+                                <img class="most-champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Rakan.png" alt="라칸" title="라칸 (1판 0승)" loading="lazy">
+                                
+                            </div>
+                        </td>
+                        <td class="hide-mobile">
+                            <ul class="insights-list">
+                                
+                                <li>MVP 3회 달성! 내전 에이스</li>
+                                
+                                <li>승률 70.0%, 승리 보증 수표</li>
+                                
+                            </ul>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td class="rank-num ">7</td>
+                        <td><span class="tier-badge tier-A">A</span></td>
+                        <td class="player-rank-name">초전도웃음</td>
+                        <td>5게임</td>
+                        <td>
+                            <div>
+                                <span class="stat-warn">20.0%</span>
+                                <span style="color:#9e9eb1;font-size:11px">(1승 4패)</span>
+                            </div>
+                            <div class="winrate-bg" style="width:60px">
+                                <span class="winrate-fill" style="width:20.0%"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="" style="font-weight:600">
+                                2.29
+                            </span>
+                            <span style="color:#9e9eb1;font-size:11px">5.8/4.2/3.8</span>
+                        </td>
+                        <td>21,907</td>
+                        <td class="hide-mobile">
+                            
+                            <span style="color:#f0b232;font-weight:600">1회</span>
+                            
+                        </td>
+                        <td class="hide-mobile">
+                            <div class="most-champs">
+                                
+                                <img class="most-champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Lucian.png" alt="루시안" title="루시안 (1판 0승)" loading="lazy">
+                                
+                                <img class="most-champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/MissFortune.png" alt="미스 포츈" title="미스 포츈 (1판 1승)" loading="lazy">
+                                
+                                <img class="most-champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Caitlyn.png" alt="케이틀린" title="케이틀린 (1판 0승)" loading="lazy">
+                                
+                            </div>
+                        </td>
+                        <td class="hide-mobile">
+                            <ul class="insights-list">
+                                
+                                <li>승률 20.0%... 힘든 시즌</li>
+                                
+                                <li>팀의 딜링 머신</li>
+                                
+                            </ul>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td class="rank-num ">8</td>
+                        <td><span class="tier-badge tier-S">S</span></td>
+                        <td class="player-rank-name">고독한 미드라인</td>
+                        <td>6게임</td>
+                        <td>
+                            <div>
+                                <span class="stat-highlight">66.7%</span>
+                                <span style="color:#9e9eb1;font-size:11px">(4승 2패)</span>
+                            </div>
+                            <div class="winrate-bg" style="width:60px">
+                                <span class="winrate-fill" style="width:66.7%"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="" style="font-weight:600">
+                                2.84
+                            </span>
+                            <span style="color:#9e9eb1;font-size:11px">4.5/4.2/7.3</span>
+                        </td>
+                        <td>20,324</td>
+                        <td class="hide-mobile">
+                            
+                            <span style="color:#9e9eb1">-</span>
+                            
+                        </td>
+                        <td class="hide-mobile">
+                            <div class="most-champs">
+                                
+                                <img class="most-champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Amumu.png" alt="아무무" title="아무무 (1판 1승)" loading="lazy">
+                                
+                                <img class="most-champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Seraphine.png" alt="세라핀" title="세라핀 (1판 0승)" loading="lazy">
+                                
+                                <img class="most-champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/MonkeyKing.png" alt="오공" title="오공 (1판 1승)" loading="lazy">
+                                
+                            </div>
+                        </td>
+                        <td class="hide-mobile">
+                            <ul class="insights-list">
+                                
+                                <li>승률 66.7%, 승리 보증 수표</li>
+                                
+                                <li>팀의 딜링 머신</li>
+                                
+                            </ul>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td class="rank-num ">9</td>
+                        <td><span class="tier-badge tier-A">A</span></td>
+                        <td class="player-rank-name">보라가오리</td>
+                        <td>4게임</td>
+                        <td>
+                            <div>
+                                <span class="">50.0%</span>
+                                <span style="color:#9e9eb1;font-size:11px">(2승 2패)</span>
+                            </div>
+                            <div class="winrate-bg" style="width:60px">
+                                <span class="winrate-fill" style="width:50.0%"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="" style="font-weight:600">
+                                2.26
+                            </span>
+                            <span style="color:#9e9eb1;font-size:11px">1.8/5.8/11.2</span>
+                        </td>
+                        <td>20,119</td>
+                        <td class="hide-mobile">
+                            
+                            <span style="color:#9e9eb1">-</span>
+                            
+                        </td>
+                        <td class="hide-mobile">
+                            <div class="most-champs">
+                                
+                                <img class="most-champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Alistar.png" alt="알리스타" title="알리스타 (1판 1승)" loading="lazy">
+                                
+                                <img class="most-champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Malzahar.png" alt="말자하" title="말자하 (1판 0승)" loading="lazy">
+                                
+                                <img class="most-champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Naafiri.png" alt="나피리" title="나피리 (1판 1승)" loading="lazy">
+                                
+                            </div>
+                        </td>
+                        <td class="hide-mobile">
+                            <ul class="insights-list">
+                                
+                                <li>팀의 딜링 머신</li>
+                                
+                                <li>시야 장악 달인</li>
+                                
+                            </ul>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td class="rank-num ">10</td>
+                        <td><span class="tier-badge tier-S">S</span></td>
+                        <td class="player-rank-name">인스턴트 크러쉬</td>
+                        <td>1게임</td>
+                        <td>
+                            <div>
+                                <span class="stat-highlight">100.0%</span>
+                                <span style="color:#9e9eb1;font-size:11px">(1승 0패)</span>
+                            </div>
+                            <div class="winrate-bg" style="width:60px">
+                                <span class="winrate-fill" style="width:100.0%"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="kda-bad" style="font-weight:600">
+                                1.38
+                            </span>
+                            <span style="color:#9e9eb1;font-size:11px">5.0/8.0/6.0</span>
+                        </td>
+                        <td>27,246</td>
+                        <td class="hide-mobile">
+                            
+                            <span style="color:#9e9eb1">-</span>
+                            
+                        </td>
+                        <td class="hide-mobile">
+                            <div class="most-champs">
+                                
+                                <img class="most-champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Gnar.png" alt="나르" title="나르 (1판 1승)" loading="lazy">
+                                
+                            </div>
+                        </td>
+                        <td class="hide-mobile">
+                            <ul class="insights-list">
+                                
+                                <li>승률 100.0%, 승리 보증 수표</li>
+                                
+                                <li>팀의 딜링 머신</li>
+                                
+                            </ul>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td class="rank-num ">11</td>
+                        <td><span class="tier-badge tier-S">S</span></td>
+                        <td class="player-rank-name">고독한 도구라인</td>
+                        <td>10게임</td>
+                        <td>
+                            <div>
+                                <span class="stat-highlight">80.0%</span>
+                                <span style="color:#9e9eb1;font-size:11px">(8승 2패)</span>
+                            </div>
+                            <div class="winrate-bg" style="width:60px">
+                                <span class="winrate-fill" style="width:80.0%"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="" style="font-weight:600">
+                                2.14
+                            </span>
+                            <span style="color:#9e9eb1;font-size:11px">3.2/4.9/7.3</span>
+                        </td>
+                        <td>20,184</td>
+                        <td class="hide-mobile">
+                            
+                            <span style="color:#9e9eb1">-</span>
+                            
+                        </td>
+                        <td class="hide-mobile">
+                            <div class="most-champs">
+                                
+                                <img class="most-champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Heimerdinger.png" alt="하이머딩거" title="하이머딩거 (2판 1승)" loading="lazy">
+                                
+                                <img class="most-champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/DrMundo.png" alt="문도 박사" title="문도 박사 (1판 1승)" loading="lazy">
+                                
+                                <img class="most-champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Sett.png" alt="세트" title="세트 (1판 1승)" loading="lazy">
+                                
+                            </div>
+                        </td>
+                        <td class="hide-mobile">
+                            <ul class="insights-list">
+                                
+                                <li>승률 80.0%, 승리 보증 수표</li>
+                                
+                                <li>팀의 딜링 머신</li>
+                                
+                            </ul>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td class="rank-num ">12</td>
+                        <td><span class="tier-badge tier-A">A</span></td>
+                        <td class="player-rank-name">협곡의 소년가장</td>
+                        <td>5게임</td>
+                        <td>
+                            <div>
+                                <span class="stat-warn">40.0%</span>
+                                <span style="color:#9e9eb1;font-size:11px">(2승 3패)</span>
+                            </div>
+                            <div class="winrate-bg" style="width:60px">
+                                <span class="winrate-fill" style="width:40.0%"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="kda-bad" style="font-weight:600">
+                                1.35
+                            </span>
+                            <span style="color:#9e9eb1;font-size:11px">3.8/6.8/5.4</span>
+                        </td>
+                        <td>24,218</td>
+                        <td class="hide-mobile">
+                            
+                            <span style="color:#9e9eb1">-</span>
+                            
+                        </td>
+                        <td class="hide-mobile">
+                            <div class="most-champs">
+                                
+                                <img class="most-champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Ahri.png" alt="아리" title="아리 (1판 0승)" loading="lazy">
+                                
+                                <img class="most-champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Renekton.png" alt="레넥톤" title="레넥톤 (1판 0승)" loading="lazy">
+                                
+                                <img class="most-champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Jax.png" alt="잭스" title="잭스 (1판 1승)" loading="lazy">
+                                
+                            </div>
+                        </td>
+                        <td class="hide-mobile">
+                            <ul class="insights-list">
+                                
+                                <li>팀의 딜링 머신</li>
+                                
+                                <li>시야 장악 달인</li>
+                                
+                            </ul>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td class="rank-num ">13</td>
+                        <td><span class="tier-badge tier-A">A</span></td>
+                        <td class="player-rank-name">양배상추</td>
+                        <td>6게임</td>
+                        <td>
+                            <div>
+                                <span class="stat-warn">16.7%</span>
+                                <span style="color:#9e9eb1;font-size:11px">(1승 5패)</span>
+                            </div>
+                            <div class="winrate-bg" style="width:60px">
+                                <span class="winrate-fill" style="width:16.7%"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="" style="font-weight:600">
+                                2.21
+                            </span>
+                            <span style="color:#9e9eb1;font-size:11px">3.0/4.0/5.8</span>
+                        </td>
+                        <td>18,536</td>
+                        <td class="hide-mobile">
+                            
+                            <span style="color:#9e9eb1">-</span>
+                            
+                        </td>
+                        <td class="hide-mobile">
+                            <div class="most-champs">
+                                
+                                <img class="most-champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Malzahar.png" alt="말자하" title="말자하 (1판 0승)" loading="lazy">
+                                
+                                <img class="most-champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Mel.png" alt="멜" title="멜 (1판 1승)" loading="lazy">
+                                
+                                <img class="most-champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Sylas.png" alt="사일러스" title="사일러스 (1판 0승)" loading="lazy">
+                                
+                            </div>
+                        </td>
+                        <td class="hide-mobile">
+                            <ul class="insights-list">
+                                
+                                <li>승률 16.7%... 힘든 시즌</li>
+                                
+                            </ul>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td class="rank-num ">14</td>
+                        <td><span class="tier-badge tier-A">A</span></td>
+                        <td class="player-rank-name">심신수양</td>
+                        <td>4게임</td>
+                        <td>
+                            <div>
+                                <span class="stat-warn">25.0%</span>
+                                <span style="color:#9e9eb1;font-size:11px">(1승 3패)</span>
+                            </div>
+                            <div class="winrate-bg" style="width:60px">
+                                <span class="winrate-fill" style="width:25.0%"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="kda-bad" style="font-weight:600">
+                                1.39
+                            </span>
+                            <span style="color:#9e9eb1;font-size:11px">3.8/7.0/6.0</span>
+                        </td>
+                        <td>14,176</td>
+                        <td class="hide-mobile">
+                            
+                            <span style="color:#f0b232;font-weight:600">1회</span>
+                            
+                        </td>
+                        <td class="hide-mobile">
+                            <div class="most-champs">
+                                
+                                <img class="most-champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Leona.png" alt="레오나" title="레오나 (1판 0승)" loading="lazy">
+                                
+                                <img class="most-champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Ekko.png" alt="에코" title="에코 (1판 0승)" loading="lazy">
+                                
+                                <img class="most-champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Sylas.png" alt="사일러스" title="사일러스 (1판 1승)" loading="lazy">
+                                
+                            </div>
+                        </td>
+                        <td class="hide-mobile">
+                            <ul class="insights-list">
+                                
+                                <li>승률 25.0%... 힘든 시즌</li>
+                                
+                                <li>시야 장악 달인</li>
+                                
+                            </ul>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td class="rank-num ">15</td>
+                        <td><span class="tier-badge tier-A">A</span></td>
+                        <td class="player-rank-name">장모거세게반대라스</td>
+                        <td>4게임</td>
+                        <td>
+                            <div>
+                                <span class="stat-warn">25.0%</span>
+                                <span style="color:#9e9eb1;font-size:11px">(1승 3패)</span>
+                            </div>
+                            <div class="winrate-bg" style="width:60px">
+                                <span class="winrate-fill" style="width:25.0%"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="" style="font-weight:600">
+                                1.52
+                            </span>
+                            <span style="color:#9e9eb1;font-size:11px">3.0/5.2/5.0</span>
+                        </td>
+                        <td>21,262</td>
+                        <td class="hide-mobile">
+                            
+                            <span style="color:#9e9eb1">-</span>
+                            
+                        </td>
+                        <td class="hide-mobile">
+                            <div class="most-champs">
+                                
+                                <img class="most-champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Jinx.png" alt="징크스" title="징크스 (1판 0승)" loading="lazy">
+                                
+                                <img class="most-champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Sivir.png" alt="시비르" title="시비르 (1판 0승)" loading="lazy">
+                                
+                                <img class="most-champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Corki.png" alt="코르키" title="코르키 (1판 1승)" loading="lazy">
+                                
+                            </div>
+                        </td>
+                        <td class="hide-mobile">
+                            <ul class="insights-list">
+                                
+                                <li>승률 25.0%... 힘든 시즌</li>
+                                
+                                <li>팀의 딜링 머신</li>
+                                
+                            </ul>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td class="rank-num ">16</td>
+                        <td><span class="tier-badge tier-A">A</span></td>
+                        <td class="player-rank-name">태연민</td>
+                        <td>5게임</td>
+                        <td>
+                            <div>
+                                <span class="stat-warn">20.0%</span>
+                                <span style="color:#9e9eb1;font-size:11px">(1승 4패)</span>
+                            </div>
+                            <div class="winrate-bg" style="width:60px">
+                                <span class="winrate-fill" style="width:20.0%"></span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="kda-bad" style="font-weight:600">
+                                1.12
+                            </span>
+                            <span style="color:#9e9eb1;font-size:11px">1.0/5.2/4.8</span>
+                        </td>
+                        <td>10,261</td>
+                        <td class="hide-mobile">
+                            
+                            <span style="color:#9e9eb1">-</span>
+                            
+                        </td>
+                        <td class="hide-mobile">
+                            <div class="most-champs">
+                                
+                                <img class="most-champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Urgot.png" alt="우르곳" title="우르곳 (1판 0승)" loading="lazy">
+                                
+                                <img class="most-champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Sett.png" alt="세트" title="세트 (1판 1승)" loading="lazy">
+                                
+                                <img class="most-champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Braum.png" alt="브라움" title="브라움 (1판 0승)" loading="lazy">
+                                
+                            </div>
+                        </td>
+                        <td class="hide-mobile">
+                            <ul class="insights-list">
+                                
+                                <li>승률 20.0%... 힘든 시즌</li>
+                                
+                                <li>시야 장악 달인</li>
+                                
+                            </ul>
+                        </td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+    function switchTab(tab) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        event.target.classList.add('active');
+        document.getElementById('tab-' + tab).classList.add('active');
+    }
+    </script>
+</body>
+</html>
