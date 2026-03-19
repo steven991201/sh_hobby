@@ -18,6 +18,7 @@
 
         .container { max-width: 1080px; margin: 0 auto; padding: 20px; }
 
+        /* 매치 헤더 */
         .match-header { background: #282830; border-radius: 6px; padding: 20px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px; }
         .match-title { font-size: 16px; font-weight: 700; }
         .match-meta { color: #9e9eb1; font-size: 13px; margin-top: 4px; }
@@ -36,6 +37,7 @@
         .ace-highlight .info { font-size: 14px; font-weight: 600; }
         .ace-highlight .score { color: #5383e8; font-size: 12px; white-space: nowrap; }
 
+        /* 스코어보드 */
         .scoreboard { margin-bottom: 12px; }
         .team-header { padding: 10px 16px; font-size: 13px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; }
         .team-header.blue { background: rgba(83,131,232,0.15); color: #5383e8; border-radius: 6px 6px 0 0; }
@@ -101,6 +103,7 @@
             .insight-tag { max-width: 100px; }
         }
 
+        /* 모바일에서 CS 컬럼 숨김 */
         @media (max-width: 540px) {
             .player-table th:nth-child(5),
             .player-table td:nth-child(5) { display: none; }
@@ -108,13 +111,14 @@
             .player-info .name { max-width: 65px; }
         }
 
+        /* 작은 화면에서 딜량 숨김 */
         @media (max-width: 400px) {
             .player-table th:nth-child(4),
             .player-table td:nth-child(4) { display: none; }
             .match-highlights { flex-direction: column; }
             .mvp-highlight, .ace-highlight { padding: 8px 10px; }
         }
-</style>
+    </style>
 </head>
 <body>
     <div class="header">
@@ -132,7 +136,7 @@
                     03/13 23:26 · 25분 3초
                 </div>
             </div>
-            <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <div class="match-highlights">
                 <div class="mvp-highlight">
                     <span class="badge">MVP</span>
                     <span class="info">고독한정글동선 (피즈)</span>
@@ -194,260 +198,262 @@
                 <span>블루팀 (23킬 · 53,469골드)</span>
                 <span class="result win">승리</span>
             </div>
-            <div class="table-wrapper"><table class="player-table">
-                <thead>
-                    <tr>
-                        <th style="width:30px">#</th>
-                        <th>소환사</th>
-                        <th>KDA</th>
-                        <th>딜량</th>
-                        <th>CS</th>
-                        <th class="hide-mobile">시야</th>
-                        <th class="hide-mobile">골드</th>
-                        <th class="hide-mobile">킬관여</th>
-                        <th>AI</th>
-                        <th>평가</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    
-                    <tr class="mvp-row">
-                        <td>
-                            <span class="rank-badge rank-1">1</span>
-                        </td>
-                        <td>
-                            <div class="player-cell">
-                                <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Fizz.png" alt="피즈" loading="lazy">
-                                <div class="player-info">
-                                    <div class="name">
-                                        고독한정글동선
-                                        <span class="mvp-icon">MVP</span>
-                                        
+            <div class="table-wrapper">
+                <table class="player-table">
+                    <thead>
+                        <tr>
+                            <th style="width:30px">#</th>
+                            <th>소환사</th>
+                            <th>KDA</th>
+                            <th>딜량</th>
+                            <th>CS</th>
+                            <th class="hide-mobile">시야</th>
+                            <th class="hide-mobile">골드</th>
+                            <th class="hide-mobile">킬관여</th>
+                            <th>AI</th>
+                            <th>평가</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                        <tr class="mvp-row">
+                            <td>
+                                <span class="rank-badge rank-1">1</span>
+                            </td>
+                            <td>
+                                <div class="player-cell">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Fizz.png" alt="피즈" loading="lazy">
+                                    <div class="player-info">
+                                        <div class="name">
+                                            고독한정글동선
+                                            <span class="mvp-icon">MVP</span>
+                                            
+                                        </div>
+                                        <div class="champ-name">피즈</div>
                                     </div>
-                                    <div class="champ-name">피즈</div>
                                 </div>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="kda-cell">
-                                <div class="ratio kda-great">15.0</div>
-                                <div class="detail">12/0/3</div>
-                            </div>
-                        </td>
-                        <td>
-                            <div>16,109</div>
-                            <div class="damage-bar"><div class="damage-fill blue" style="width:67.0%"></div></div>
-                        </td>
-                        <td>
-                            <div>210</div>
-                            <div style="color:#9e9eb1;font-size:10px">8.4/분</div>
-                        </td>
-                        <td class="hide-mobile">18</td>
-                        <td class="hide-mobile">14,227</td>
-                        <td class="hide-mobile">65.2%</td>
-                        <td>
-                            
-                            
-                            <span class="ai-score high">97</span>
-                            
-                        </td>
-                        <td>
-                            
-                            <span class="insight-tag positive">피즈 정글 12/0/3 퍼펙트 게임. 연속킬 12는 내전 역대급. 드래곤 4개(8분/13분/19분/24분), 바론(22분), 리프트(16분) 전부 혼자 먹음. 오브젝트 딜 54K. 라인전 10분 시점 골드 4125로 팀 1등, CS 78로 정글 효율도 완벽. 할 말이 없다. 전설.</span>
-                            
-                        </td>
-                    </tr>
-                    
-                    <tr class="">
-                        <td>
-                            <span class="rank-badge rank-2">2</span>
-                        </td>
-                        <td>
-                            <div class="player-cell">
-                                <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Karma.png" alt="카르마" loading="lazy">
-                                <div class="player-info">
-                                    <div class="name">
-                                        목표는아름관
-                                        
-                                        
+                            </td>
+                            <td>
+                                <div class="kda-cell">
+                                    <div class="ratio kda-great">15.0</div>
+                                    <div class="detail">12/0/3</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div>16,109</div>
+                                <div class="damage-bar"><div class="damage-fill blue" style="width:67.0%"></div></div>
+                            </td>
+                            <td>
+                                <div>210</div>
+                                <div style="color:#9e9eb1;font-size:10px">8.4/분</div>
+                            </td>
+                            <td class="hide-mobile">18</td>
+                            <td class="hide-mobile">14,227</td>
+                            <td class="hide-mobile">65.2%</td>
+                            <td>
+                                
+                                
+                                <span class="ai-score high">97</span>
+                                
+                            </td>
+                            <td>
+                                
+                                <span class="insight-tag positive" title="피즈 정글 12/0/3 퍼펙트 게임. 연속킬 12는 내전 역대급. 드래곤 4개(8분/13분/19분/24분), 바론(22분), 리프트(16분) 전부 혼자 먹음. 오브젝트 딜 54K. 라인전 10분 시점 골드 4125로 팀 1등, CS 78로 정글 효율도 완벽. 할 말이 없다. 전설.">피즈 정글 12/0/3 퍼펙트 게임. 연속킬 12는 내전 역대급. 드래곤 4개(8분/13분/19분/24분), 바론(22분), 리프트(16분) 전부 혼자 먹음. 오브젝트 딜 54K. 라인전 10분 시점 골드 4125로 팀 1등, CS 78로 정글 효율도 완벽. 할 말이 없다. 전설.</span>
+                                
+                            </td>
+                        </tr>
+                        
+                        <tr class="">
+                            <td>
+                                <span class="rank-badge rank-2">2</span>
+                            </td>
+                            <td>
+                                <div class="player-cell">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Karma.png" alt="카르마" loading="lazy">
+                                    <div class="player-info">
+                                        <div class="name">
+                                            목표는아름관
+                                            
+                                            
+                                        </div>
+                                        <div class="champ-name">카르마</div>
                                     </div>
-                                    <div class="champ-name">카르마</div>
                                 </div>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="kda-cell">
-                                <div class="ratio kda-great">20.0</div>
-                                <div class="detail">2/0/18</div>
-                            </div>
-                        </td>
-                        <td>
-                            <div>7,873</div>
-                            <div class="damage-bar"><div class="damage-fill blue" style="width:33.0%"></div></div>
-                        </td>
-                        <td>
-                            <div>36</div>
-                            <div style="color:#9e9eb1;font-size:10px">1.4/분</div>
-                        </td>
-                        <td class="hide-mobile">86</td>
-                        <td class="hide-mobile">8,755</td>
-                        <td class="hide-mobile">87.0%</td>
-                        <td>
-                            
-                            
-                            <span class="ai-score good">88</span>
-                            
-                        </td>
-                        <td>
-                            
-                            <span class="insight-tag positive">카르마 서포터 2/0/18, 킬관여 87%. 시야점수 86, 와드설치 33개, 와드제거 10개, 제어와드 4개. 0데스에 어시스트 18이면 서포터 교과서. 한타1에서 킬, 한타2에서도 킬. 매 한타마다 빠지지 않았다. 시야+CC+생존 전부 완벽한 서포터 경기.</span>
-                            
-                        </td>
-                    </tr>
-                    
-                    <tr class="">
-                        <td>
-                            <span class="rank-badge rank-3">3</span>
-                        </td>
-                        <td>
-                            <div class="player-cell">
-                                <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Ezreal.png" alt="이즈리얼" loading="lazy">
-                                <div class="player-info">
-                                    <div class="name">
-                                        황승현
-                                        
-                                        
+                            </td>
+                            <td>
+                                <div class="kda-cell">
+                                    <div class="ratio kda-great">20.0</div>
+                                    <div class="detail">2/0/18</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div>7,873</div>
+                                <div class="damage-bar"><div class="damage-fill blue" style="width:33.0%"></div></div>
+                            </td>
+                            <td>
+                                <div>36</div>
+                                <div style="color:#9e9eb1;font-size:10px">1.4/분</div>
+                            </td>
+                            <td class="hide-mobile">86</td>
+                            <td class="hide-mobile">8,755</td>
+                            <td class="hide-mobile">87.0%</td>
+                            <td>
+                                
+                                
+                                <span class="ai-score good">88</span>
+                                
+                            </td>
+                            <td>
+                                
+                                <span class="insight-tag positive" title="카르마 서포터 2/0/18, 킬관여 87%. 시야점수 86, 와드설치 33개, 와드제거 10개, 제어와드 4개. 0데스에 어시스트 18이면 서포터 교과서. 한타1에서 킬, 한타2에서도 킬. 매 한타마다 빠지지 않았다. 시야+CC+생존 전부 완벽한 서포터 경기.">카르마 서포터 2/0/18, 킬관여 87%. 시야점수 86, 와드설치 33개, 와드제거 10개, 제어와드 4개. 0데스에 어시스트 18이면 서포터 교과서. 한타1에서 킬, 한타2에서도 킬. 매 한타마다 빠지지 않았다. 시야+CC+생존 전부 완벽한 서포터 경기.</span>
+                                
+                            </td>
+                        </tr>
+                        
+                        <tr class="">
+                            <td>
+                                <span class="rank-badge rank-3">3</span>
+                            </td>
+                            <td>
+                                <div class="player-cell">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Ezreal.png" alt="이즈리얼" loading="lazy">
+                                    <div class="player-info">
+                                        <div class="name">
+                                            황승현
+                                            
+                                            
+                                        </div>
+                                        <div class="champ-name">이즈리얼</div>
                                     </div>
-                                    <div class="champ-name">이즈리얼</div>
                                 </div>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="kda-cell">
-                                <div class="ratio kda-great">7.0</div>
-                                <div class="detail">5/2/9</div>
-                            </div>
-                        </td>
-                        <td>
-                            <div>23,952</div>
-                            <div class="damage-bar"><div class="damage-fill blue" style="width:100.0%"></div></div>
-                        </td>
-                        <td>
-                            <div>215</div>
-                            <div style="color:#9e9eb1;font-size:10px">8.6/분</div>
-                        </td>
-                        <td class="hide-mobile">6</td>
-                        <td class="hide-mobile">11,991</td>
-                        <td class="hide-mobile">60.9%</td>
-                        <td>
-                            
-                            
-                            <span class="ai-score good">80</span>
-                            
-                        </td>
-                        <td>
-                            
-                            <span class="insight-tag positive">이즈리얼 분당딜 956으로 팀 딜 31.2% 담당. 라인전 CS 91(상대 코르키 74)로 17 차이 압도. 더블킬 1번에 타워딜 8.7K로 12분/18분/20분 타워 전부 본인 이름. 오브젝트 딜도 20K로 바론/드래곤 기여. 피즈 캐리 아래서 든든한 2번 캐리.</span>
-                            
-                        </td>
-                    </tr>
-                    
-                    <tr class="">
-                        <td>
-                            <span class="rank-badge rank-other">4</span>
-                        </td>
-                        <td>
-                            <div class="player-cell">
-                                <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Shen.png" alt="쉔" loading="lazy">
-                                <div class="player-info">
-                                    <div class="name">
-                                        고독한 도구라인
-                                        
-                                        
+                            </td>
+                            <td>
+                                <div class="kda-cell">
+                                    <div class="ratio kda-great">7.0</div>
+                                    <div class="detail">5/2/9</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div>23,952</div>
+                                <div class="damage-bar"><div class="damage-fill blue" style="width:100.0%"></div></div>
+                            </td>
+                            <td>
+                                <div>215</div>
+                                <div style="color:#9e9eb1;font-size:10px">8.6/분</div>
+                            </td>
+                            <td class="hide-mobile">6</td>
+                            <td class="hide-mobile">11,991</td>
+                            <td class="hide-mobile">60.9%</td>
+                            <td>
+                                
+                                
+                                <span class="ai-score good">80</span>
+                                
+                            </td>
+                            <td>
+                                
+                                <span class="insight-tag positive" title="이즈리얼 분당딜 956으로 팀 딜 31.2% 담당. 라인전 CS 91(상대 코르키 74)로 17 차이 압도. 더블킬 1번에 타워딜 8.7K로 12분/18분/20분 타워 전부 본인 이름. 오브젝트 딜도 20K로 바론/드래곤 기여. 피즈 캐리 아래서 든든한 2번 캐리.">이즈리얼 분당딜 956으로 팀 딜 31.2% 담당. 라인전 CS 91(상대 코르키 74)로 17 차이 압도. 더블킬 1번에 타워딜 8.7K로 12분/18분/20분 타워 전부 본인 이름. 오브젝트 딜도 20K로 바론/드래곤 기여. 피즈 캐리 아래서 든든한 2번 캐리.</span>
+                                
+                            </td>
+                        </tr>
+                        
+                        <tr class="">
+                            <td>
+                                <span class="rank-badge rank-other">4</span>
+                            </td>
+                            <td>
+                                <div class="player-cell">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Shen.png" alt="쉔" loading="lazy">
+                                    <div class="player-info">
+                                        <div class="name">
+                                            고독한 도구라인
+                                            
+                                            
+                                        </div>
+                                        <div class="champ-name">쉔</div>
                                     </div>
-                                    <div class="champ-name">쉔</div>
                                 </div>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="kda-cell">
-                                <div class="ratio kda-great">5.0</div>
-                                <div class="detail">2/2/8</div>
-                            </div>
-                        </td>
-                        <td>
-                            <div>10,018</div>
-                            <div class="damage-bar"><div class="damage-fill blue" style="width:42.0%"></div></div>
-                        </td>
-                        <td>
-                            <div>197</div>
-                            <div style="color:#9e9eb1;font-size:10px">7.9/분</div>
-                        </td>
-                        <td class="hide-mobile">22</td>
-                        <td class="hide-mobile">10,086</td>
-                        <td class="hide-mobile">43.5%</td>
-                        <td>
-                            
-                            
-                            <span class="ai-score mid">65</span>
-                            
-                        </td>
-                        <td>
-                            
-                            <span class="insight-tag positive">쉔 탑으로 퍼스트블러드 어시스트 관여하면서 시작 좋았다. 라인전 CS 72로 상대 모데카이저 73과 대등. 피해경감 25K(경감률 60%)로 탱킹하면서 타워딜 7.1K로 오브젝트도 기여. 존재감은 크진 않았지만 묵묵히 제 몫 했다.</span>
-                            
-                        </td>
-                    </tr>
-                    
-                    <tr class="">
-                        <td>
-                            <span class="rank-badge rank-other">5</span>
-                        </td>
-                        <td>
-                            <div class="player-cell">
-                                <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Malphite.png" alt="말파이트" loading="lazy">
-                                <div class="player-info">
-                                    <div class="name">
-                                        고독한 미드라인
-                                        
-                                        
+                            </td>
+                            <td>
+                                <div class="kda-cell">
+                                    <div class="ratio kda-great">5.0</div>
+                                    <div class="detail">2/2/8</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div>10,018</div>
+                                <div class="damage-bar"><div class="damage-fill blue" style="width:42.0%"></div></div>
+                            </td>
+                            <td>
+                                <div>197</div>
+                                <div style="color:#9e9eb1;font-size:10px">7.9/분</div>
+                            </td>
+                            <td class="hide-mobile">22</td>
+                            <td class="hide-mobile">10,086</td>
+                            <td class="hide-mobile">43.5%</td>
+                            <td>
+                                
+                                
+                                <span class="ai-score mid">65</span>
+                                
+                            </td>
+                            <td>
+                                
+                                <span class="insight-tag positive" title="쉔 탑으로 퍼스트블러드 어시스트 관여하면서 시작 좋았다. 라인전 CS 72로 상대 모데카이저 73과 대등. 피해경감 25K(경감률 60%)로 탱킹하면서 타워딜 7.1K로 오브젝트도 기여. 존재감은 크진 않았지만 묵묵히 제 몫 했다.">쉔 탑으로 퍼스트블러드 어시스트 관여하면서 시작 좋았다. 라인전 CS 72로 상대 모데카이저 73과 대등. 피해경감 25K(경감률 60%)로 탱킹하면서 타워딜 7.1K로 오브젝트도 기여. 존재감은 크진 않았지만 묵묵히 제 몫 했다.</span>
+                                
+                            </td>
+                        </tr>
+                        
+                        <tr class="">
+                            <td>
+                                <span class="rank-badge rank-other">5</span>
+                            </td>
+                            <td>
+                                <div class="player-cell">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Malphite.png" alt="말파이트" loading="lazy">
+                                    <div class="player-info">
+                                        <div class="name">
+                                            고독한 미드라인
+                                            
+                                            
+                                        </div>
+                                        <div class="champ-name">말파이트</div>
                                     </div>
-                                    <div class="champ-name">말파이트</div>
                                 </div>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="kda-cell">
-                                <div class="ratio kda-great">6.0</div>
-                                <div class="detail">2/1/4</div>
-                            </div>
-                        </td>
-                        <td>
-                            <div>18,753</div>
-                            <div class="damage-bar"><div class="damage-fill blue" style="width:78.0%"></div></div>
-                        </td>
-                        <td>
-                            <div>165</div>
-                            <div style="color:#9e9eb1;font-size:10px">6.6/분</div>
-                        </td>
-                        <td class="hide-mobile">23</td>
-                        <td class="hide-mobile">8,410</td>
-                        <td class="hide-mobile">26.1%</td>
-                        <td>
-                            
-                            
-                            <span class="ai-score mid">62</span>
-                            
-                        </td>
-                        <td>
-                            
-                            <span class="insight-tag positive">말파이트 탑으로 CC 36초, 피해경감 35K(경감률 69%)로 탱킹 올인. 라인전 CS 56으로 상대 모데카이저 73에 밀렸지만, 말파이트는 라인전 지는 게 정상이니 감점 없음. 타워딜 5.2K로 나름 기여했고 안 죽고 버텨줬다.</span>
-                            
-                        </td>
-                    </tr>
-                    
-                </tbody>
-            </table></div>
+                            </td>
+                            <td>
+                                <div class="kda-cell">
+                                    <div class="ratio kda-great">6.0</div>
+                                    <div class="detail">2/1/4</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div>18,753</div>
+                                <div class="damage-bar"><div class="damage-fill blue" style="width:78.0%"></div></div>
+                            </td>
+                            <td>
+                                <div>165</div>
+                                <div style="color:#9e9eb1;font-size:10px">6.6/분</div>
+                            </td>
+                            <td class="hide-mobile">23</td>
+                            <td class="hide-mobile">8,410</td>
+                            <td class="hide-mobile">26.1%</td>
+                            <td>
+                                
+                                
+                                <span class="ai-score mid">62</span>
+                                
+                            </td>
+                            <td>
+                                
+                                <span class="insight-tag positive" title="말파이트 탑으로 CC 36초, 피해경감 35K(경감률 69%)로 탱킹 올인. 라인전 CS 56으로 상대 모데카이저 73에 밀렸지만, 말파이트는 라인전 지는 게 정상이니 감점 없음. 타워딜 5.2K로 나름 기여했고 안 죽고 버텨줬다.">말파이트 탑으로 CC 36초, 피해경감 35K(경감률 69%)로 탱킹 올인. 라인전 CS 56으로 상대 모데카이저 73에 밀렸지만, 말파이트는 라인전 지는 게 정상이니 감점 없음. 타워딜 5.2K로 나름 기여했고 안 죽고 버텨줬다.</span>
+                                
+                            </td>
+                        </tr>
+                        
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <!-- 레드팀 -->
@@ -456,260 +462,262 @@
                 <span>레드팀 (5킬 · 41,368골드)</span>
                 <span class="result loss">패배</span>
             </div>
-            <div class="table-wrapper"><table class="player-table">
-                <thead>
-                    <tr>
-                        <th style="width:30px">#</th>
-                        <th>소환사</th>
-                        <th>KDA</th>
-                        <th>딜량</th>
-                        <th>CS</th>
-                        <th class="hide-mobile">시야</th>
-                        <th class="hide-mobile">골드</th>
-                        <th class="hide-mobile">킬관여</th>
-                        <th>AI</th>
-                        <th>평가</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    
-                    <tr class="">
-                        <td>
-                            <span class="rank-badge rank-other">6</span>
-                        </td>
-                        <td>
-                            <div class="player-cell">
-                                <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Graves.png" alt="그레이브즈" loading="lazy">
-                                <div class="player-info">
-                                    <div class="name">
-                                        JustLikeThatKB
-                                        
-                                        
+            <div class="table-wrapper">
+                <table class="player-table">
+                    <thead>
+                        <tr>
+                            <th style="width:30px">#</th>
+                            <th>소환사</th>
+                            <th>KDA</th>
+                            <th>딜량</th>
+                            <th>CS</th>
+                            <th class="hide-mobile">시야</th>
+                            <th class="hide-mobile">골드</th>
+                            <th class="hide-mobile">킬관여</th>
+                            <th>AI</th>
+                            <th>평가</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                        <tr class="">
+                            <td>
+                                <span class="rank-badge rank-other">6</span>
+                            </td>
+                            <td>
+                                <div class="player-cell">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Graves.png" alt="그레이브즈" loading="lazy">
+                                    <div class="player-info">
+                                        <div class="name">
+                                            JustLikeThatKB
+                                            
+                                            
+                                        </div>
+                                        <div class="champ-name">그레이브즈</div>
                                     </div>
-                                    <div class="champ-name">그레이브즈</div>
                                 </div>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="kda-cell">
-                                <div class="ratio kda-bad">0.83</div>
-                                <div class="detail">3/6/2</div>
-                            </div>
-                        </td>
-                        <td>
-                            <div>17,295</div>
-                            <div class="damage-bar"><div class="damage-fill red" style="width:72.0%"></div></div>
-                        </td>
-                        <td>
-                            <div>178</div>
-                            <div style="color:#9e9eb1;font-size:10px">7.1/분</div>
-                        </td>
-                        <td class="hide-mobile">17</td>
-                        <td class="hide-mobile">10,155</td>
-                        <td class="hide-mobile">100.0%</td>
-                        <td>
-                            
-                            
-                            <span class="ai-score bad">25</span>
-                            
-                        </td>
-                        <td>
-                            
-                            <span class="insight-tag positive">그레이브즈 정글 3/6/2, 킬관여 100%인데 팀킬이 5개뿐이라... 상대 피즈가 12킬 하는 동안 오브젝트 하나도 못 뺏음. 오브젝트 딜 1.4K는 진짜 충격적. 정글 차이가 곧 게임 차이였고, 그 정글 차이의 피해자.</span>
-                            
-                        </td>
-                    </tr>
-                    
-                    <tr class="">
-                        <td>
-                            <span class="rank-badge rank-other">7</span>
-                        </td>
-                        <td>
-                            <div class="player-cell">
-                                <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Corki.png" alt="코르키" loading="lazy">
-                                <div class="player-info">
-                                    <div class="name">
-                                        초전도웃음
-                                        
-                                        
+                            </td>
+                            <td>
+                                <div class="kda-cell">
+                                    <div class="ratio kda-bad">0.83</div>
+                                    <div class="detail">3/6/2</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div>17,295</div>
+                                <div class="damage-bar"><div class="damage-fill red" style="width:72.0%"></div></div>
+                            </td>
+                            <td>
+                                <div>178</div>
+                                <div style="color:#9e9eb1;font-size:10px">7.1/분</div>
+                            </td>
+                            <td class="hide-mobile">17</td>
+                            <td class="hide-mobile">10,155</td>
+                            <td class="hide-mobile">100.0%</td>
+                            <td>
+                                
+                                
+                                <span class="ai-score bad">25</span>
+                                
+                            </td>
+                            <td>
+                                
+                                <span class="insight-tag positive" title="그레이브즈 정글 3/6/2, 킬관여 100%인데 팀킬이 5개뿐이라... 상대 피즈가 12킬 하는 동안 오브젝트 하나도 못 뺏음. 오브젝트 딜 1.4K는 진짜 충격적. 정글 차이가 곧 게임 차이였고, 그 정글 차이의 피해자.">그레이브즈 정글 3/6/2, 킬관여 100%인데 팀킬이 5개뿐이라... 상대 피즈가 12킬 하는 동안 오브젝트 하나도 못 뺏음. 오브젝트 딜 1.4K는 진짜 충격적. 정글 차이가 곧 게임 차이였고, 그 정글 차이의 피해자.</span>
+                                
+                            </td>
+                        </tr>
+                        
+                        <tr class="">
+                            <td>
+                                <span class="rank-badge rank-other">7</span>
+                            </td>
+                            <td>
+                                <div class="player-cell">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Corki.png" alt="코르키" loading="lazy">
+                                    <div class="player-info">
+                                        <div class="name">
+                                            초전도웃음
+                                            
+                                            
+                                        </div>
+                                        <div class="champ-name">코르키</div>
                                     </div>
-                                    <div class="champ-name">코르키</div>
                                 </div>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="kda-cell">
-                                <div class="ratio kda-bad">0.4</div>
-                                <div class="detail">1/5/1</div>
-                            </div>
-                        </td>
-                        <td>
-                            <div>10,414</div>
-                            <div class="damage-bar"><div class="damage-fill red" style="width:43.0%"></div></div>
-                        </td>
-                        <td>
-                            <div>215</div>
-                            <div style="color:#9e9eb1;font-size:10px">8.6/분</div>
-                        </td>
-                        <td class="hide-mobile">12</td>
-                        <td class="hide-mobile">9,434</td>
-                        <td class="hide-mobile">40.0%</td>
-                        <td>
-                            
-                            
-                            <span class="ai-score bad">22</span>
-                            
-                        </td>
-                        <td>
-                            
-                            <span class="insight-tag positive">코르키 원딜 1/5/1. 라인전 CS 74(상대 이즈리얼 91)에서 17 차이로 밀림. 오브젝트 딜 910은 원딜치고 한심한 수준. CC 0초. 팀이 터지는 걸 구경만 했다.</span>
-                            
-                        </td>
-                    </tr>
-                    
-                    <tr class="">
-                        <td>
-                            <span class="rank-badge rank-other">8</span>
-                        </td>
-                        <td>
-                            <div class="player-cell">
-                                <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Lissandra.png" alt="리산드라" loading="lazy">
-                                <div class="player-info">
-                                    <div class="name">
-                                        양배상추
-                                        
-                                        
+                            </td>
+                            <td>
+                                <div class="kda-cell">
+                                    <div class="ratio kda-bad">0.4</div>
+                                    <div class="detail">1/5/1</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div>10,414</div>
+                                <div class="damage-bar"><div class="damage-fill red" style="width:43.0%"></div></div>
+                            </td>
+                            <td>
+                                <div>215</div>
+                                <div style="color:#9e9eb1;font-size:10px">8.6/분</div>
+                            </td>
+                            <td class="hide-mobile">12</td>
+                            <td class="hide-mobile">9,434</td>
+                            <td class="hide-mobile">40.0%</td>
+                            <td>
+                                
+                                
+                                <span class="ai-score bad">22</span>
+                                
+                            </td>
+                            <td>
+                                
+                                <span class="insight-tag positive" title="코르키 원딜 1/5/1. 라인전 CS 74(상대 이즈리얼 91)에서 17 차이로 밀림. 오브젝트 딜 910은 원딜치고 한심한 수준. CC 0초. 팀이 터지는 걸 구경만 했다.">코르키 원딜 1/5/1. 라인전 CS 74(상대 이즈리얼 91)에서 17 차이로 밀림. 오브젝트 딜 910은 원딜치고 한심한 수준. CC 0초. 팀이 터지는 걸 구경만 했다.</span>
+                                
+                            </td>
+                        </tr>
+                        
+                        <tr class="">
+                            <td>
+                                <span class="rank-badge rank-other">8</span>
+                            </td>
+                            <td>
+                                <div class="player-cell">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Lissandra.png" alt="리산드라" loading="lazy">
+                                    <div class="player-info">
+                                        <div class="name">
+                                            양배상추
+                                            
+                                            
+                                        </div>
+                                        <div class="champ-name">리산드라</div>
                                     </div>
-                                    <div class="champ-name">리산드라</div>
                                 </div>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="kda-cell">
-                                <div class="ratio kda-bad">0.4</div>
-                                <div class="detail">1/5/1</div>
-                            </div>
-                        </td>
-                        <td>
-                            <div>11,861</div>
-                            <div class="damage-bar"><div class="damage-fill red" style="width:50.0%"></div></div>
-                        </td>
-                        <td>
-                            <div>172</div>
-                            <div style="color:#9e9eb1;font-size:10px">6.9/분</div>
-                        </td>
-                        <td class="hide-mobile">14</td>
-                        <td class="hide-mobile">7,869</td>
-                        <td class="hide-mobile">40.0%</td>
-                        <td>
-                            
-                            
-                            <span class="ai-score bad">28</span>
-                            
-                        </td>
-                        <td>
-                            
-                            <span class="insight-tag positive">리산드라 미드 1/5/1, 킬관여 40%. 라인전 CS 58로 상대 쉔 72에 밀림. 리산드라인데 CC 49초는 나쁘지 않지만 5데스 하면서 이니시하다 녹기만 했다. 존재감 없는 경기.</span>
-                            
-                        </td>
-                    </tr>
-                    
-                    <tr class="">
-                        <td>
-                            <span class="rank-badge rank-other">9</span>
-                        </td>
-                        <td>
-                            <div class="player-cell">
-                                <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Mordekaiser.png" alt="모데카이저" loading="lazy">
-                                <div class="player-info">
-                                    <div class="name">
-                                        고독한 숟
-                                        
-                                        
+                            </td>
+                            <td>
+                                <div class="kda-cell">
+                                    <div class="ratio kda-bad">0.4</div>
+                                    <div class="detail">1/5/1</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div>11,861</div>
+                                <div class="damage-bar"><div class="damage-fill red" style="width:50.0%"></div></div>
+                            </td>
+                            <td>
+                                <div>172</div>
+                                <div style="color:#9e9eb1;font-size:10px">6.9/분</div>
+                            </td>
+                            <td class="hide-mobile">14</td>
+                            <td class="hide-mobile">7,869</td>
+                            <td class="hide-mobile">40.0%</td>
+                            <td>
+                                
+                                
+                                <span class="ai-score bad">28</span>
+                                
+                            </td>
+                            <td>
+                                
+                                <span class="insight-tag positive" title="리산드라 미드 1/5/1, 킬관여 40%. 라인전 CS 58로 상대 쉔 72에 밀림. 리산드라인데 CC 49초는 나쁘지 않지만 5데스 하면서 이니시하다 녹기만 했다. 존재감 없는 경기.">리산드라 미드 1/5/1, 킬관여 40%. 라인전 CS 58로 상대 쉔 72에 밀림. 리산드라인데 CC 49초는 나쁘지 않지만 5데스 하면서 이니시하다 녹기만 했다. 존재감 없는 경기.</span>
+                                
+                            </td>
+                        </tr>
+                        
+                        <tr class="">
+                            <td>
+                                <span class="rank-badge rank-other">9</span>
+                            </td>
+                            <td>
+                                <div class="player-cell">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Mordekaiser.png" alt="모데카이저" loading="lazy">
+                                    <div class="player-info">
+                                        <div class="name">
+                                            고독한 숟
+                                            
+                                            
+                                        </div>
+                                        <div class="champ-name">모데카이저</div>
                                     </div>
-                                    <div class="champ-name">모데카이저</div>
                                 </div>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="kda-cell">
-                                <div class="ratio kda-bad">0.33</div>
-                                <div class="detail">0/3/1</div>
-                            </div>
-                        </td>
-                        <td>
-                            <div>11,494</div>
-                            <div class="damage-bar"><div class="damage-fill red" style="width:48.0%"></div></div>
-                        </td>
-                        <td>
-                            <div>204</div>
-                            <div style="color:#9e9eb1;font-size:10px">8.1/분</div>
-                        </td>
-                        <td class="hide-mobile">19</td>
-                        <td class="hide-mobile">8,268</td>
-                        <td class="hide-mobile">20.0%</td>
-                        <td>
-                            
-                            
-                            <span class="ai-score low">30</span>
-                            
-                        </td>
-                        <td>
-                            
-                            <span class="insight-tag positive">모데카이저 탑 0/3/1, 킬관여 20%. 라인전 CS 73으로 상대 말파이트 56에는 앞섰지만 골드 차이는 별로 안 났다. 피해경감 20K(경감률 47%)로 탱킹은 했는데 한타 참여가 너무 저조. 팀이 5대5 하는데 혼자 사이드에서 CS만 먹은 느낌.</span>
-                            
-                        </td>
-                    </tr>
-                    
-                    <tr class="ace-row">
-                        <td>
-                            <span class="rank-badge rank-other">10</span>
-                        </td>
-                        <td>
-                            <div class="player-cell">
-                                <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Nautilus.png" alt="노틸러스" loading="lazy">
-                                <div class="player-info">
-                                    <div class="name">
-                                        태연민
-                                        
-                                        <span class="ace-icon">ACE</span>
+                            </td>
+                            <td>
+                                <div class="kda-cell">
+                                    <div class="ratio kda-bad">0.33</div>
+                                    <div class="detail">0/3/1</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div>11,494</div>
+                                <div class="damage-bar"><div class="damage-fill red" style="width:48.0%"></div></div>
+                            </td>
+                            <td>
+                                <div>204</div>
+                                <div style="color:#9e9eb1;font-size:10px">8.1/분</div>
+                            </td>
+                            <td class="hide-mobile">19</td>
+                            <td class="hide-mobile">8,268</td>
+                            <td class="hide-mobile">20.0%</td>
+                            <td>
+                                
+                                
+                                <span class="ai-score low">30</span>
+                                
+                            </td>
+                            <td>
+                                
+                                <span class="insight-tag positive" title="모데카이저 탑 0/3/1, 킬관여 20%. 라인전 CS 73으로 상대 말파이트 56에는 앞섰지만 골드 차이는 별로 안 났다. 피해경감 20K(경감률 47%)로 탱킹은 했는데 한타 참여가 너무 저조. 팀이 5대5 하는데 혼자 사이드에서 CS만 먹은 느낌.">모데카이저 탑 0/3/1, 킬관여 20%. 라인전 CS 73으로 상대 말파이트 56에는 앞섰지만 골드 차이는 별로 안 났다. 피해경감 20K(경감률 47%)로 탱킹은 했는데 한타 참여가 너무 저조. 팀이 5대5 하는데 혼자 사이드에서 CS만 먹은 느낌.</span>
+                                
+                            </td>
+                        </tr>
+                        
+                        <tr class="ace-row">
+                            <td>
+                                <span class="rank-badge rank-other">10</span>
+                            </td>
+                            <td>
+                                <div class="player-cell">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Nautilus.png" alt="노틸러스" loading="lazy">
+                                    <div class="player-info">
+                                        <div class="name">
+                                            태연민
+                                            
+                                            <span class="ace-icon">ACE</span>
+                                        </div>
+                                        <div class="champ-name">노틸러스</div>
                                     </div>
-                                    <div class="champ-name">노틸러스</div>
                                 </div>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="kda-cell">
-                                <div class="ratio kda-bad">0.25</div>
-                                <div class="detail">0/4/1</div>
-                            </div>
-                        </td>
-                        <td>
-                            <div>2,700</div>
-                            <div class="damage-bar"><div class="damage-fill red" style="width:11.0%"></div></div>
-                        </td>
-                        <td>
-                            <div>40</div>
-                            <div style="color:#9e9eb1;font-size:10px">1.6/분</div>
-                        </td>
-                        <td class="hide-mobile">53</td>
-                        <td class="hide-mobile">5,642</td>
-                        <td class="hide-mobile">20.0%</td>
-                        <td>
-                            
-                            
-                            <span class="ai-score low">38</span>
-                            
-                        </td>
-                        <td>
-                            
-                            <span class="insight-tag positive">노틸러스 서포터 0/4/1, 킬관여 20%. 시야점수 53, 와드설치 22개, 와드제거 9개로 시야 작업은 했다. 피해경감 21K(경감률 57%)로 탱킹도 했는데, CC 22초는 노틸이치고 좀 아쉽다. 상대 서포터 카르마가 87% 킬관여인데 본인은 20%... 서포터 차이도 컸다.</span>
-                            
-                        </td>
-                    </tr>
-                    
-                </tbody>
-            </table></div>
+                            </td>
+                            <td>
+                                <div class="kda-cell">
+                                    <div class="ratio kda-bad">0.25</div>
+                                    <div class="detail">0/4/1</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div>2,700</div>
+                                <div class="damage-bar"><div class="damage-fill red" style="width:11.0%"></div></div>
+                            </td>
+                            <td>
+                                <div>40</div>
+                                <div style="color:#9e9eb1;font-size:10px">1.6/분</div>
+                            </td>
+                            <td class="hide-mobile">53</td>
+                            <td class="hide-mobile">5,642</td>
+                            <td class="hide-mobile">20.0%</td>
+                            <td>
+                                
+                                
+                                <span class="ai-score low">38</span>
+                                
+                            </td>
+                            <td>
+                                
+                                <span class="insight-tag positive" title="노틸러스 서포터 0/4/1, 킬관여 20%. 시야점수 53, 와드설치 22개, 와드제거 9개로 시야 작업은 했다. 피해경감 21K(경감률 57%)로 탱킹도 했는데, CC 22초는 노틸이치고 좀 아쉽다. 상대 서포터 카르마가 87% 킬관여인데 본인은 20%... 서포터 차이도 컸다.">노틸러스 서포터 0/4/1, 킬관여 20%. 시야점수 53, 와드설치 22개, 와드제거 9개로 시야 작업은 했다. 피해경감 21K(경감률 57%)로 탱킹도 했는데, CC 22초는 노틸이치고 좀 아쉽다. 상대 서포터 카르마가 87% 킬관여인데 본인은 20%... 서포터 차이도 컸다.</span>
+                                
+                            </td>
+                        </tr>
+                        
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </body>

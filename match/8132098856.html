@@ -18,6 +18,7 @@
 
         .container { max-width: 1080px; margin: 0 auto; padding: 20px; }
 
+        /* 매치 헤더 */
         .match-header { background: #282830; border-radius: 6px; padding: 20px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px; }
         .match-title { font-size: 16px; font-weight: 700; }
         .match-meta { color: #9e9eb1; font-size: 13px; margin-top: 4px; }
@@ -36,6 +37,7 @@
         .ace-highlight .info { font-size: 14px; font-weight: 600; }
         .ace-highlight .score { color: #5383e8; font-size: 12px; white-space: nowrap; }
 
+        /* 스코어보드 */
         .scoreboard { margin-bottom: 12px; }
         .team-header { padding: 10px 16px; font-size: 13px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; }
         .team-header.blue { background: rgba(83,131,232,0.15); color: #5383e8; border-radius: 6px 6px 0 0; }
@@ -101,6 +103,7 @@
             .insight-tag { max-width: 100px; }
         }
 
+        /* 모바일에서 CS 컬럼 숨김 */
         @media (max-width: 540px) {
             .player-table th:nth-child(5),
             .player-table td:nth-child(5) { display: none; }
@@ -108,13 +111,14 @@
             .player-info .name { max-width: 65px; }
         }
 
+        /* 작은 화면에서 딜량 숨김 */
         @media (max-width: 400px) {
             .player-table th:nth-child(4),
             .player-table td:nth-child(4) { display: none; }
             .match-highlights { flex-direction: column; }
             .mvp-highlight, .ace-highlight { padding: 8px 10px; }
         }
-</style>
+    </style>
 </head>
 <body>
     <div class="header">
@@ -132,7 +136,7 @@
                     03/14 02:06 · 22분 24초
                 </div>
             </div>
-            <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <div class="match-highlights">
                 <div class="mvp-highlight">
                     <span class="badge">MVP</span>
                     <span class="info">초전도웃음 (미스 포츈)</span>
@@ -194,260 +198,262 @@
                 <span>블루팀 (24킬 · 46,804골드)</span>
                 <span class="result win">승리</span>
             </div>
-            <div class="table-wrapper"><table class="player-table">
-                <thead>
-                    <tr>
-                        <th style="width:30px">#</th>
-                        <th>소환사</th>
-                        <th>KDA</th>
-                        <th>딜량</th>
-                        <th>CS</th>
-                        <th class="hide-mobile">시야</th>
-                        <th class="hide-mobile">골드</th>
-                        <th class="hide-mobile">킬관여</th>
-                        <th>AI</th>
-                        <th>평가</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    
-                    <tr class="mvp-row">
-                        <td>
-                            <span class="rank-badge rank-1">1</span>
-                        </td>
-                        <td>
-                            <div class="player-cell">
-                                <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/MissFortune.png" alt="미스 포츈" loading="lazy">
-                                <div class="player-info">
-                                    <div class="name">
-                                        초전도웃음
-                                        <span class="mvp-icon">MVP</span>
-                                        
+            <div class="table-wrapper">
+                <table class="player-table">
+                    <thead>
+                        <tr>
+                            <th style="width:30px">#</th>
+                            <th>소환사</th>
+                            <th>KDA</th>
+                            <th>딜량</th>
+                            <th>CS</th>
+                            <th class="hide-mobile">시야</th>
+                            <th class="hide-mobile">골드</th>
+                            <th class="hide-mobile">킬관여</th>
+                            <th>AI</th>
+                            <th>평가</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                        <tr class="mvp-row">
+                            <td>
+                                <span class="rank-badge rank-1">1</span>
+                            </td>
+                            <td>
+                                <div class="player-cell">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/MissFortune.png" alt="미스 포츈" loading="lazy">
+                                    <div class="player-info">
+                                        <div class="name">
+                                            초전도웃음
+                                            <span class="mvp-icon">MVP</span>
+                                            
+                                        </div>
+                                        <div class="champ-name">미스 포츈</div>
                                     </div>
-                                    <div class="champ-name">미스 포츈</div>
                                 </div>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="kda-cell">
-                                <div class="ratio kda-great">14.0</div>
-                                <div class="detail">10/0/4</div>
-                            </div>
-                        </td>
-                        <td>
-                            <div>19,774</div>
-                            <div class="damage-bar"><div class="damage-fill blue" style="width:100.0%"></div></div>
-                        </td>
-                        <td>
-                            <div>209</div>
-                            <div style="color:#9e9eb1;font-size:10px">9.3/분</div>
-                        </td>
-                        <td class="hide-mobile">16</td>
-                        <td class="hide-mobile">12,556</td>
-                        <td class="hide-mobile">58.3%</td>
-                        <td>
-                            
-                            
-                            <span class="ai-score high">95</span>
-                            
-                        </td>
-                        <td>
-                            
-                            <span class="insight-tag positive">미스포츈 10/0/4 퍼펙트. CS 분당 9.3으로 파밍까지 완벽. 라인전 CS 92(상대 애쉬 73)로 19 차이 압도, 골드도 1063 앞섬. 더블킬 2번에 연속킬 10. 타워딜 8.1K로 타워도 직접 밀었다. 22분 동안 안 죽고 10킬이면 할 말이 없다.</span>
-                            
-                        </td>
-                    </tr>
-                    
-                    <tr class="">
-                        <td>
-                            <span class="rank-badge rank-2">2</span>
-                        </td>
-                        <td>
-                            <div class="player-cell">
-                                <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Viego.png" alt="비에고" loading="lazy">
-                                <div class="player-info">
-                                    <div class="name">
-                                        JustLikeThatKB
-                                        
-                                        
+                            </td>
+                            <td>
+                                <div class="kda-cell">
+                                    <div class="ratio kda-great">14.0</div>
+                                    <div class="detail">10/0/4</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div>19,774</div>
+                                <div class="damage-bar"><div class="damage-fill blue" style="width:100.0%"></div></div>
+                            </td>
+                            <td>
+                                <div>209</div>
+                                <div style="color:#9e9eb1;font-size:10px">9.3/분</div>
+                            </td>
+                            <td class="hide-mobile">16</td>
+                            <td class="hide-mobile">12,556</td>
+                            <td class="hide-mobile">58.3%</td>
+                            <td>
+                                
+                                
+                                <span class="ai-score high">95</span>
+                                
+                            </td>
+                            <td>
+                                
+                                <span class="insight-tag positive" title="미스포츈 10/0/4 퍼펙트. CS 분당 9.3으로 파밍까지 완벽. 라인전 CS 92(상대 애쉬 73)로 19 차이 압도, 골드도 1063 앞섬. 더블킬 2번에 연속킬 10. 타워딜 8.1K로 타워도 직접 밀었다. 22분 동안 안 죽고 10킬이면 할 말이 없다.">미스포츈 10/0/4 퍼펙트. CS 분당 9.3으로 파밍까지 완벽. 라인전 CS 92(상대 애쉬 73)로 19 차이 압도, 골드도 1063 앞섬. 더블킬 2번에 연속킬 10. 타워딜 8.1K로 타워도 직접 밀었다. 22분 동안 안 죽고 10킬이면 할 말이 없다.</span>
+                                
+                            </td>
+                        </tr>
+                        
+                        <tr class="">
+                            <td>
+                                <span class="rank-badge rank-2">2</span>
+                            </td>
+                            <td>
+                                <div class="player-cell">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Viego.png" alt="비에고" loading="lazy">
+                                    <div class="player-info">
+                                        <div class="name">
+                                            JustLikeThatKB
+                                            
+                                            
+                                        </div>
+                                        <div class="champ-name">비에고</div>
                                     </div>
-                                    <div class="champ-name">비에고</div>
                                 </div>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="kda-cell">
-                                <div class="ratio kda-great">14.0</div>
-                                <div class="detail">8/1/6</div>
-                            </div>
-                        </td>
-                        <td>
-                            <div>18,882</div>
-                            <div class="damage-bar"><div class="damage-fill blue" style="width:95.0%"></div></div>
-                        </td>
-                        <td>
-                            <div>176</div>
-                            <div style="color:#9e9eb1;font-size:10px">7.9/분</div>
-                        </td>
-                        <td class="hide-mobile">24</td>
-                        <td class="hide-mobile">10,771</td>
-                        <td class="hide-mobile">58.3%</td>
-                        <td>
-                            
-                            
-                            <span class="ai-score good">82</span>
-                            
-                        </td>
-                        <td>
-                            
-                            <span class="insight-tag positive">비에고 정글 8/1/6, 연속킬 7. 오브젝트 딜 29K로 드래곤 2개+리프트 확보. 라인전 CS 61(상대 니달리 88)로 밀렸지만 킬 8개로 보상. 한타2에서 더블킬, 한타4에서도 킬. 비에고 리셋 잘 활용한 캐리 경기.</span>
-                            
-                        </td>
-                    </tr>
-                    
-                    <tr class="">
-                        <td>
-                            <span class="rank-badge rank-3">3</span>
-                        </td>
-                        <td>
-                            <div class="player-cell">
-                                <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Blitzcrank.png" alt="블리츠크랭크" loading="lazy">
-                                <div class="player-info">
-                                    <div class="name">
-                                        고독한 숟
-                                        
-                                        
+                            </td>
+                            <td>
+                                <div class="kda-cell">
+                                    <div class="ratio kda-great">14.0</div>
+                                    <div class="detail">8/1/6</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div>18,882</div>
+                                <div class="damage-bar"><div class="damage-fill blue" style="width:95.0%"></div></div>
+                            </td>
+                            <td>
+                                <div>176</div>
+                                <div style="color:#9e9eb1;font-size:10px">7.9/분</div>
+                            </td>
+                            <td class="hide-mobile">24</td>
+                            <td class="hide-mobile">10,771</td>
+                            <td class="hide-mobile">58.3%</td>
+                            <td>
+                                
+                                
+                                <span class="ai-score good">82</span>
+                                
+                            </td>
+                            <td>
+                                
+                                <span class="insight-tag positive" title="비에고 정글 8/1/6, 연속킬 7. 오브젝트 딜 29K로 드래곤 2개+리프트 확보. 라인전 CS 61(상대 니달리 88)로 밀렸지만 킬 8개로 보상. 한타2에서 더블킬, 한타4에서도 킬. 비에고 리셋 잘 활용한 캐리 경기.">비에고 정글 8/1/6, 연속킬 7. 오브젝트 딜 29K로 드래곤 2개+리프트 확보. 라인전 CS 61(상대 니달리 88)로 밀렸지만 킬 8개로 보상. 한타2에서 더블킬, 한타4에서도 킬. 비에고 리셋 잘 활용한 캐리 경기.</span>
+                                
+                            </td>
+                        </tr>
+                        
+                        <tr class="">
+                            <td>
+                                <span class="rank-badge rank-3">3</span>
+                            </td>
+                            <td>
+                                <div class="player-cell">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Blitzcrank.png" alt="블리츠크랭크" loading="lazy">
+                                    <div class="player-info">
+                                        <div class="name">
+                                            고독한 숟
+                                            
+                                            
+                                        </div>
+                                        <div class="champ-name">블리츠크랭크</div>
                                     </div>
-                                    <div class="champ-name">블리츠크랭크</div>
                                 </div>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="kda-cell">
-                                <div class="ratio kda-great">15.0</div>
-                                <div class="detail">0/1/15</div>
-                            </div>
-                        </td>
-                        <td>
-                            <div>5,227</div>
-                            <div class="damage-bar"><div class="damage-fill blue" style="width:26.0%"></div></div>
-                        </td>
-                        <td>
-                            <div>20</div>
-                            <div style="color:#9e9eb1;font-size:10px">0.9/분</div>
-                        </td>
-                        <td class="hide-mobile">52</td>
-                        <td class="hide-mobile">6,498</td>
-                        <td class="hide-mobile">62.5%</td>
-                        <td>
-                            
-                            
-                            <span class="ai-score good">78</span>
-                            
-                        </td>
-                        <td>
-                            
-                            <span class="insight-tag positive">블리츠크랭크 서포터 0/1/15, 킬관여 62.5%. 시야점수 52, 와드설치 19개, 와드제거 6개, 제어와드 4개. CC 28초로 그랩+넉업 역할 충실. 0킬인데 어시스트 15면 팀에 킬 다 넘긴 교과서적 서포터. 피해경감 10K(경감률 47%)로 앞에서 맞아주기도 함.</span>
-                            
-                        </td>
-                    </tr>
-                    
-                    <tr class="">
-                        <td>
-                            <span class="rank-badge rank-other">4</span>
-                        </td>
-                        <td>
-                            <div class="player-cell">
-                                <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Mel.png" alt="멜" loading="lazy">
-                                <div class="player-info">
-                                    <div class="name">
-                                        양배상추
-                                        
-                                        
+                            </td>
+                            <td>
+                                <div class="kda-cell">
+                                    <div class="ratio kda-great">15.0</div>
+                                    <div class="detail">0/1/15</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div>5,227</div>
+                                <div class="damage-bar"><div class="damage-fill blue" style="width:26.0%"></div></div>
+                            </td>
+                            <td>
+                                <div>20</div>
+                                <div style="color:#9e9eb1;font-size:10px">0.9/분</div>
+                            </td>
+                            <td class="hide-mobile">52</td>
+                            <td class="hide-mobile">6,498</td>
+                            <td class="hide-mobile">62.5%</td>
+                            <td>
+                                
+                                
+                                <span class="ai-score good">78</span>
+                                
+                            </td>
+                            <td>
+                                
+                                <span class="insight-tag positive" title="블리츠크랭크 서포터 0/1/15, 킬관여 62.5%. 시야점수 52, 와드설치 19개, 와드제거 6개, 제어와드 4개. CC 28초로 그랩+넉업 역할 충실. 0킬인데 어시스트 15면 팀에 킬 다 넘긴 교과서적 서포터. 피해경감 10K(경감률 47%)로 앞에서 맞아주기도 함.">블리츠크랭크 서포터 0/1/15, 킬관여 62.5%. 시야점수 52, 와드설치 19개, 와드제거 6개, 제어와드 4개. CC 28초로 그랩+넉업 역할 충실. 0킬인데 어시스트 15면 팀에 킬 다 넘긴 교과서적 서포터. 피해경감 10K(경감률 47%)로 앞에서 맞아주기도 함.</span>
+                                
+                            </td>
+                        </tr>
+                        
+                        <tr class="">
+                            <td>
+                                <span class="rank-badge rank-other">4</span>
+                            </td>
+                            <td>
+                                <div class="player-cell">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Mel.png" alt="멜" loading="lazy">
+                                    <div class="player-info">
+                                        <div class="name">
+                                            양배상추
+                                            
+                                            
+                                        </div>
+                                        <div class="champ-name">멜</div>
                                     </div>
-                                    <div class="champ-name">멜</div>
                                 </div>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="kda-cell">
-                                <div class="ratio kda-good">3.0</div>
-                                <div class="detail">5/2/1</div>
-                            </div>
-                        </td>
-                        <td>
-                            <div>19,699</div>
-                            <div class="damage-bar"><div class="damage-fill blue" style="width:100.0%"></div></div>
-                        </td>
-                        <td>
-                            <div>181</div>
-                            <div style="color:#9e9eb1;font-size:10px">8.1/분</div>
-                        </td>
-                        <td class="hide-mobile">17</td>
-                        <td class="hide-mobile">9,206</td>
-                        <td class="hide-mobile">25.0%</td>
-                        <td>
-                            
-                            
-                            <span class="ai-score good">72</span>
-                            
-                        </td>
-                        <td>
-                            
-                            <span class="insight-tag positive">멜 미드 5/2/1, 퍼스트블러드 관여. 라인전 CS 77(상대 초가스 63)로 14 앞서면서 골드 1081 차이. 멜로 CC 38초 찍으면서 이니시+딜 동시에. 한타2에서 킬, 한타4에서도 킬. 상대 초가스가 너무 녹아서 편하게 한 것도 있지만 자기 몫은 확실히 했다.</span>
-                            
-                        </td>
-                    </tr>
-                    
-                    <tr class="">
-                        <td>
-                            <span class="rank-badge rank-other">7</span>
-                        </td>
-                        <td>
-                            <div class="player-cell">
-                                <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Sett.png" alt="세트" loading="lazy">
-                                <div class="player-info">
-                                    <div class="name">
-                                        태연민
-                                        
-                                        
+                            </td>
+                            <td>
+                                <div class="kda-cell">
+                                    <div class="ratio kda-good">3.0</div>
+                                    <div class="detail">5/2/1</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div>19,699</div>
+                                <div class="damage-bar"><div class="damage-fill blue" style="width:100.0%"></div></div>
+                            </td>
+                            <td>
+                                <div>181</div>
+                                <div style="color:#9e9eb1;font-size:10px">8.1/분</div>
+                            </td>
+                            <td class="hide-mobile">17</td>
+                            <td class="hide-mobile">9,206</td>
+                            <td class="hide-mobile">25.0%</td>
+                            <td>
+                                
+                                
+                                <span class="ai-score good">72</span>
+                                
+                            </td>
+                            <td>
+                                
+                                <span class="insight-tag positive" title="멜 미드 5/2/1, 퍼스트블러드 관여. 라인전 CS 77(상대 초가스 63)로 14 앞서면서 골드 1081 차이. 멜로 CC 38초 찍으면서 이니시+딜 동시에. 한타2에서 킬, 한타4에서도 킬. 상대 초가스가 너무 녹아서 편하게 한 것도 있지만 자기 몫은 확실히 했다.">멜 미드 5/2/1, 퍼스트블러드 관여. 라인전 CS 77(상대 초가스 63)로 14 앞서면서 골드 1081 차이. 멜로 CC 38초 찍으면서 이니시+딜 동시에. 한타2에서 킬, 한타4에서도 킬. 상대 초가스가 너무 녹아서 편하게 한 것도 있지만 자기 몫은 확실히 했다.</span>
+                                
+                            </td>
+                        </tr>
+                        
+                        <tr class="">
+                            <td>
+                                <span class="rank-badge rank-other">7</span>
+                            </td>
+                            <td>
+                                <div class="player-cell">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Sett.png" alt="세트" loading="lazy">
+                                    <div class="player-info">
+                                        <div class="name">
+                                            태연민
+                                            
+                                            
+                                        </div>
+                                        <div class="champ-name">세트</div>
                                     </div>
-                                    <div class="champ-name">세트</div>
                                 </div>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="kda-cell">
-                                <div class="ratio kda-bad">1.0</div>
-                                <div class="detail">1/2/1</div>
-                            </div>
-                        </td>
-                        <td>
-                            <div>10,811</div>
-                            <div class="damage-bar"><div class="damage-fill blue" style="width:55.0%"></div></div>
-                        </td>
-                        <td>
-                            <div>181</div>
-                            <div style="color:#9e9eb1;font-size:10px">8.1/분</div>
-                        </td>
-                        <td class="hide-mobile">14</td>
-                        <td class="hide-mobile">7,773</td>
-                        <td class="hide-mobile">8.3%</td>
-                        <td>
-                            
-                            
-                            <span class="ai-score low">35</span>
-                            
-                        </td>
-                        <td>
-                            
-                            <span class="insight-tag positive">세트 탑 1/2/1, 킬관여 8.3%. 솔직히 이 경기에서 뭘 했는지 모르겠다. 라인전 CS 68(상대 사이온 75)로 밀렸고, 한타 참여도 거의 없었다. 팀이 이기니까 승리했지 본인 기여도는 최하위. 세트로 킬관여 8%는 좀...</span>
-                            
-                        </td>
-                    </tr>
-                    
-                </tbody>
-            </table></div>
+                            </td>
+                            <td>
+                                <div class="kda-cell">
+                                    <div class="ratio kda-bad">1.0</div>
+                                    <div class="detail">1/2/1</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div>10,811</div>
+                                <div class="damage-bar"><div class="damage-fill blue" style="width:55.0%"></div></div>
+                            </td>
+                            <td>
+                                <div>181</div>
+                                <div style="color:#9e9eb1;font-size:10px">8.1/분</div>
+                            </td>
+                            <td class="hide-mobile">14</td>
+                            <td class="hide-mobile">7,773</td>
+                            <td class="hide-mobile">8.3%</td>
+                            <td>
+                                
+                                
+                                <span class="ai-score low">35</span>
+                                
+                            </td>
+                            <td>
+                                
+                                <span class="insight-tag positive" title="세트 탑 1/2/1, 킬관여 8.3%. 솔직히 이 경기에서 뭘 했는지 모르겠다. 라인전 CS 68(상대 사이온 75)로 밀렸고, 한타 참여도 거의 없었다. 팀이 이기니까 승리했지 본인 기여도는 최하위. 세트로 킬관여 8%는 좀...">세트 탑 1/2/1, 킬관여 8.3%. 솔직히 이 경기에서 뭘 했는지 모르겠다. 라인전 CS 68(상대 사이온 75)로 밀렸고, 한타 참여도 거의 없었다. 팀이 이기니까 승리했지 본인 기여도는 최하위. 세트로 킬관여 8%는 좀...</span>
+                                
+                            </td>
+                        </tr>
+                        
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <!-- 레드팀 -->
@@ -456,260 +462,262 @@
                 <span>레드팀 (6킬 · 37,052골드)</span>
                 <span class="result loss">패배</span>
             </div>
-            <div class="table-wrapper"><table class="player-table">
-                <thead>
-                    <tr>
-                        <th style="width:30px">#</th>
-                        <th>소환사</th>
-                        <th>KDA</th>
-                        <th>딜량</th>
-                        <th>CS</th>
-                        <th class="hide-mobile">시야</th>
-                        <th class="hide-mobile">골드</th>
-                        <th class="hide-mobile">킬관여</th>
-                        <th>AI</th>
-                        <th>평가</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    
-                    <tr class="ace-row">
-                        <td>
-                            <span class="rank-badge rank-other">5</span>
-                        </td>
-                        <td>
-                            <div class="player-cell">
-                                <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Sion.png" alt="사이온" loading="lazy">
-                                <div class="player-info">
-                                    <div class="name">
-                                        목표는아름관
-                                        
-                                        <span class="ace-icon">ACE</span>
+            <div class="table-wrapper">
+                <table class="player-table">
+                    <thead>
+                        <tr>
+                            <th style="width:30px">#</th>
+                            <th>소환사</th>
+                            <th>KDA</th>
+                            <th>딜량</th>
+                            <th>CS</th>
+                            <th class="hide-mobile">시야</th>
+                            <th class="hide-mobile">골드</th>
+                            <th class="hide-mobile">킬관여</th>
+                            <th>AI</th>
+                            <th>평가</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                        <tr class="ace-row">
+                            <td>
+                                <span class="rank-badge rank-other">5</span>
+                            </td>
+                            <td>
+                                <div class="player-cell">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Sion.png" alt="사이온" loading="lazy">
+                                    <div class="player-info">
+                                        <div class="name">
+                                            목표는아름관
+                                            
+                                            <span class="ace-icon">ACE</span>
+                                        </div>
+                                        <div class="champ-name">사이온</div>
                                     </div>
-                                    <div class="champ-name">사이온</div>
                                 </div>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="kda-cell">
-                                <div class="ratio kda-bad">1.0</div>
-                                <div class="detail">3/3/0</div>
-                            </div>
-                        </td>
-                        <td>
-                            <div>15,299</div>
-                            <div class="damage-bar"><div class="damage-fill red" style="width:77.0%"></div></div>
-                        </td>
-                        <td>
-                            <div>195</div>
-                            <div style="color:#9e9eb1;font-size:10px">8.7/분</div>
-                        </td>
-                        <td class="hide-mobile">13</td>
-                        <td class="hide-mobile">9,129</td>
-                        <td class="hide-mobile">50.0%</td>
-                        <td>
-                            
-                            
-                            <span class="ai-score low">48</span>
-                            
-                        </td>
-                        <td>
-                            
-                            <span class="insight-tag positive">사이온 탑 3/3/0, 킬관여 50%. 라인전 CS 75(상대 세트 68)로 앞섬. 피해경감 20K(경감률 57%)로 탱킹. CC 38초. 킬관여가 50%인데 어시스트 0은 혼자 사이드에서 논 느낌. 3킬 했지만 팀 싸움 기여가 부족했다.</span>
-                            
-                        </td>
-                    </tr>
-                    
-                    <tr class="">
-                        <td>
-                            <span class="rank-badge rank-other">6</span>
-                        </td>
-                        <td>
-                            <div class="player-cell">
-                                <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Nidalee.png" alt="니달리" loading="lazy">
-                                <div class="player-info">
-                                    <div class="name">
-                                        고독한정글동선
-                                        
-                                        
+                            </td>
+                            <td>
+                                <div class="kda-cell">
+                                    <div class="ratio kda-bad">1.0</div>
+                                    <div class="detail">3/3/0</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div>15,299</div>
+                                <div class="damage-bar"><div class="damage-fill red" style="width:77.0%"></div></div>
+                            </td>
+                            <td>
+                                <div>195</div>
+                                <div style="color:#9e9eb1;font-size:10px">8.7/분</div>
+                            </td>
+                            <td class="hide-mobile">13</td>
+                            <td class="hide-mobile">9,129</td>
+                            <td class="hide-mobile">50.0%</td>
+                            <td>
+                                
+                                
+                                <span class="ai-score low">48</span>
+                                
+                            </td>
+                            <td>
+                                
+                                <span class="insight-tag positive" title="사이온 탑 3/3/0, 킬관여 50%. 라인전 CS 75(상대 세트 68)로 앞섬. 피해경감 20K(경감률 57%)로 탱킹. CC 38초. 킬관여가 50%인데 어시스트 0은 혼자 사이드에서 논 느낌. 3킬 했지만 팀 싸움 기여가 부족했다.">사이온 탑 3/3/0, 킬관여 50%. 라인전 CS 75(상대 세트 68)로 앞섬. 피해경감 20K(경감률 57%)로 탱킹. CC 38초. 킬관여가 50%인데 어시스트 0은 혼자 사이드에서 논 느낌. 3킬 했지만 팀 싸움 기여가 부족했다.</span>
+                                
+                            </td>
+                        </tr>
+                        
+                        <tr class="">
+                            <td>
+                                <span class="rank-badge rank-other">6</span>
+                            </td>
+                            <td>
+                                <div class="player-cell">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Nidalee.png" alt="니달리" loading="lazy">
+                                    <div class="player-info">
+                                        <div class="name">
+                                            고독한정글동선
+                                            
+                                            
+                                        </div>
+                                        <div class="champ-name">니달리</div>
                                     </div>
-                                    <div class="champ-name">니달리</div>
                                 </div>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="kda-cell">
-                                <div class="ratio kda-bad">1.33</div>
-                                <div class="detail">1/3/3</div>
-                            </div>
-                        </td>
-                        <td>
-                            <div>7,597</div>
-                            <div class="damage-bar"><div class="damage-fill red" style="width:38.0%"></div></div>
-                        </td>
-                        <td>
-                            <div>157</div>
-                            <div style="color:#9e9eb1;font-size:10px">7.0/분</div>
-                        </td>
-                        <td class="hide-mobile">18</td>
-                        <td class="hide-mobile">8,325</td>
-                        <td class="hide-mobile">66.7%</td>
-                        <td>
-                            
-                            
-                            <span class="ai-score low">40</span>
-                            
-                        </td>
-                        <td>
-                            
-                            <span class="insight-tag positive">니달리 정글 1/3/3, 킬관여 66.7%. 오브젝트 딜 9.8K로 정글 캠프는 먹었는데, 상대 비에고가 8/1에 오브젝트 딜 29K인 걸 보면 정글 차이가 크다. 라인전 CS 88(상대 비에고 61)로 파밍은 앞섰지만 킬 관여가 너무 적었다. 니달리 특성상 갱킹 성공이 중요한데 별로 안 된 듯.</span>
-                            
-                        </td>
-                    </tr>
-                    
-                    <tr class="">
-                        <td>
-                            <span class="rank-badge rank-other">8</span>
-                        </td>
-                        <td>
-                            <div class="player-cell">
-                                <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Seraphine.png" alt="세라핀" loading="lazy">
-                                <div class="player-info">
-                                    <div class="name">
-                                        고독한 미드라인
-                                        
-                                        
+                            </td>
+                            <td>
+                                <div class="kda-cell">
+                                    <div class="ratio kda-bad">1.33</div>
+                                    <div class="detail">1/3/3</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div>7,597</div>
+                                <div class="damage-bar"><div class="damage-fill red" style="width:38.0%"></div></div>
+                            </td>
+                            <td>
+                                <div>157</div>
+                                <div style="color:#9e9eb1;font-size:10px">7.0/분</div>
+                            </td>
+                            <td class="hide-mobile">18</td>
+                            <td class="hide-mobile">8,325</td>
+                            <td class="hide-mobile">66.7%</td>
+                            <td>
+                                
+                                
+                                <span class="ai-score low">40</span>
+                                
+                            </td>
+                            <td>
+                                
+                                <span class="insight-tag positive" title="니달리 정글 1/3/3, 킬관여 66.7%. 오브젝트 딜 9.8K로 정글 캠프는 먹었는데, 상대 비에고가 8/1에 오브젝트 딜 29K인 걸 보면 정글 차이가 크다. 라인전 CS 88(상대 비에고 61)로 파밍은 앞섰지만 킬 관여가 너무 적었다. 니달리 특성상 갱킹 성공이 중요한데 별로 안 된 듯.">니달리 정글 1/3/3, 킬관여 66.7%. 오브젝트 딜 9.8K로 정글 캠프는 먹었는데, 상대 비에고가 8/1에 오브젝트 딜 29K인 걸 보면 정글 차이가 크다. 라인전 CS 88(상대 비에고 61)로 파밍은 앞섰지만 킬 관여가 너무 적었다. 니달리 특성상 갱킹 성공이 중요한데 별로 안 된 듯.</span>
+                                
+                            </td>
+                        </tr>
+                        
+                        <tr class="">
+                            <td>
+                                <span class="rank-badge rank-other">8</span>
+                            </td>
+                            <td>
+                                <div class="player-cell">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Seraphine.png" alt="세라핀" loading="lazy">
+                                    <div class="player-info">
+                                        <div class="name">
+                                            고독한 미드라인
+                                            
+                                            
+                                        </div>
+                                        <div class="champ-name">세라핀</div>
                                     </div>
-                                    <div class="champ-name">세라핀</div>
                                 </div>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="kda-cell">
-                                <div class="ratio kda-bad">0.5</div>
-                                <div class="detail">2/6/1</div>
-                            </div>
-                        </td>
-                        <td>
-                            <div>8,302</div>
-                            <div class="damage-bar"><div class="damage-fill red" style="width:42.0%"></div></div>
-                        </td>
-                        <td>
-                            <div>29</div>
-                            <div style="color:#9e9eb1;font-size:10px">1.3/분</div>
-                        </td>
-                        <td class="hide-mobile">50</td>
-                        <td class="hide-mobile">5,763</td>
-                        <td class="hide-mobile">50.0%</td>
-                        <td>
-                            
-                            
-                            <span class="ai-score low">35</span>
-                            
-                        </td>
-                        <td>
-                            
-                            <span class="insight-tag positive">세라핀 서포터 2/6/1. 시야점수 50, 와드설치 24개로 시야 작업은 했는데 6데스가 너무 많다. 더블킬 1번 했지만 그게 한타1에서 상대 2명 죽인 거라 블루팀 입장에서 오히려 불을 지핀 셈. 팀이 무너지는 걸 혼자 막을 수는 없었다.</span>
-                            
-                        </td>
-                    </tr>
-                    
-                    <tr class="">
-                        <td>
-                            <span class="rank-badge rank-other">9</span>
-                        </td>
-                        <td>
-                            <div class="player-cell">
-                                <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Ashe.png" alt="애쉬" loading="lazy">
-                                <div class="player-info">
-                                    <div class="name">
-                                        황승현
-                                        
-                                        
+                            </td>
+                            <td>
+                                <div class="kda-cell">
+                                    <div class="ratio kda-bad">0.5</div>
+                                    <div class="detail">2/6/1</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div>8,302</div>
+                                <div class="damage-bar"><div class="damage-fill red" style="width:42.0%"></div></div>
+                            </td>
+                            <td>
+                                <div>29</div>
+                                <div style="color:#9e9eb1;font-size:10px">1.3/분</div>
+                            </td>
+                            <td class="hide-mobile">50</td>
+                            <td class="hide-mobile">5,763</td>
+                            <td class="hide-mobile">50.0%</td>
+                            <td>
+                                
+                                
+                                <span class="ai-score low">35</span>
+                                
+                            </td>
+                            <td>
+                                
+                                <span class="insight-tag positive" title="세라핀 서포터 2/6/1. 시야점수 50, 와드설치 24개로 시야 작업은 했는데 6데스가 너무 많다. 더블킬 1번 했지만 그게 한타1에서 상대 2명 죽인 거라 블루팀 입장에서 오히려 불을 지핀 셈. 팀이 무너지는 걸 혼자 막을 수는 없었다.">세라핀 서포터 2/6/1. 시야점수 50, 와드설치 24개로 시야 작업은 했는데 6데스가 너무 많다. 더블킬 1번 했지만 그게 한타1에서 상대 2명 죽인 거라 블루팀 입장에서 오히려 불을 지핀 셈. 팀이 무너지는 걸 혼자 막을 수는 없었다.</span>
+                                
+                            </td>
+                        </tr>
+                        
+                        <tr class="">
+                            <td>
+                                <span class="rank-badge rank-other">9</span>
+                            </td>
+                            <td>
+                                <div class="player-cell">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Ashe.png" alt="애쉬" loading="lazy">
+                                    <div class="player-info">
+                                        <div class="name">
+                                            황승현
+                                            
+                                            
+                                        </div>
+                                        <div class="champ-name">애쉬</div>
                                     </div>
-                                    <div class="champ-name">애쉬</div>
                                 </div>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="kda-cell">
-                                <div class="ratio kda-bad">0.6</div>
-                                <div class="detail">0/5/3</div>
-                            </div>
-                        </td>
-                        <td>
-                            <div>9,472</div>
-                            <div class="damage-bar"><div class="damage-fill red" style="width:48.0%"></div></div>
-                        </td>
-                        <td>
-                            <div>164</div>
-                            <div style="color:#9e9eb1;font-size:10px">7.3/분</div>
-                        </td>
-                        <td class="hide-mobile">9</td>
-                        <td class="hide-mobile">7,625</td>
-                        <td class="hide-mobile">50.0%</td>
-                        <td>
-                            
-                            
-                            <span class="ai-score bad">22</span>
-                            
-                        </td>
-                        <td>
-                            
-                            <span class="insight-tag positive">애쉬 원딜 0/5/3. 라인전 CS 73(상대 미포 92)로 19 차이 밀림. 분당딜 423으로 원딜치고 참담한 수치. 오브젝트 딜 4.3K에 시야점수 9. 애쉬 특유의 유틸도 못 살리고 5데스만 추가. 미포한테 완전히 압살당한 경기.</span>
-                            
-                        </td>
-                    </tr>
-                    
-                    <tr class="">
-                        <td>
-                            <span class="rank-badge rank-other">10</span>
-                        </td>
-                        <td>
-                            <div class="player-cell">
-                                <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Chogath.png" alt="초가스" loading="lazy">
-                                <div class="player-info">
-                                    <div class="name">
-                                        고독한 도구라인
-                                        
-                                        
+                            </td>
+                            <td>
+                                <div class="kda-cell">
+                                    <div class="ratio kda-bad">0.6</div>
+                                    <div class="detail">0/5/3</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div>9,472</div>
+                                <div class="damage-bar"><div class="damage-fill red" style="width:48.0%"></div></div>
+                            </td>
+                            <td>
+                                <div>164</div>
+                                <div style="color:#9e9eb1;font-size:10px">7.3/분</div>
+                            </td>
+                            <td class="hide-mobile">9</td>
+                            <td class="hide-mobile">7,625</td>
+                            <td class="hide-mobile">50.0%</td>
+                            <td>
+                                
+                                
+                                <span class="ai-score bad">22</span>
+                                
+                            </td>
+                            <td>
+                                
+                                <span class="insight-tag positive" title="애쉬 원딜 0/5/3. 라인전 CS 73(상대 미포 92)로 19 차이 밀림. 분당딜 423으로 원딜치고 참담한 수치. 오브젝트 딜 4.3K에 시야점수 9. 애쉬 특유의 유틸도 못 살리고 5데스만 추가. 미포한테 완전히 압살당한 경기.">애쉬 원딜 0/5/3. 라인전 CS 73(상대 미포 92)로 19 차이 밀림. 분당딜 423으로 원딜치고 참담한 수치. 오브젝트 딜 4.3K에 시야점수 9. 애쉬 특유의 유틸도 못 살리고 5데스만 추가. 미포한테 완전히 압살당한 경기.</span>
+                                
+                            </td>
+                        </tr>
+                        
+                        <tr class="">
+                            <td>
+                                <span class="rank-badge rank-other">10</span>
+                            </td>
+                            <td>
+                                <div class="player-cell">
+                                    <img class="champ-icon" src="https://ddragon.leagueoflegends.com/cdn/16.6.1/img/champion/Chogath.png" alt="초가스" loading="lazy">
+                                    <div class="player-info">
+                                        <div class="name">
+                                            고독한 도구라인
+                                            
+                                            
+                                        </div>
+                                        <div class="champ-name">초가스</div>
                                     </div>
-                                    <div class="champ-name">초가스</div>
                                 </div>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="kda-cell">
-                                <div class="ratio kda-bad">0.14</div>
-                                <div class="detail">0/7/1</div>
-                            </div>
-                        </td>
-                        <td>
-                            <div>4,086</div>
-                            <div class="damage-bar"><div class="damage-fill red" style="width:21.0%"></div></div>
-                        </td>
-                        <td>
-                            <div>141</div>
-                            <div style="color:#9e9eb1;font-size:10px">6.3/분</div>
-                        </td>
-                        <td class="hide-mobile">7</td>
-                        <td class="hide-mobile">6,210</td>
-                        <td class="hide-mobile">16.7%</td>
-                        <td>
-                            
-                            
-                            <span class="ai-score bad">12</span>
-                            
-                        </td>
-                        <td>
-                            
-                            <span class="insight-tag positive">초가스 미드 0/7/1, 킬관여 16.7%. 라인전 CS 63(상대 멜 77)로 14 밀리면서 골드 1081 차이. 피해경감 12K인데 27K 맞았으니 녹는 속도가 장난 아니었을 듯. 한타마다 앞에서 터지면서 팀에 골드만 헌납. 오늘 왜 온 건지 진심 모르겠다.</span>
-                            
-                        </td>
-                    </tr>
-                    
-                </tbody>
-            </table></div>
+                            </td>
+                            <td>
+                                <div class="kda-cell">
+                                    <div class="ratio kda-bad">0.14</div>
+                                    <div class="detail">0/7/1</div>
+                                </div>
+                            </td>
+                            <td>
+                                <div>4,086</div>
+                                <div class="damage-bar"><div class="damage-fill red" style="width:21.0%"></div></div>
+                            </td>
+                            <td>
+                                <div>141</div>
+                                <div style="color:#9e9eb1;font-size:10px">6.3/분</div>
+                            </td>
+                            <td class="hide-mobile">7</td>
+                            <td class="hide-mobile">6,210</td>
+                            <td class="hide-mobile">16.7%</td>
+                            <td>
+                                
+                                
+                                <span class="ai-score bad">12</span>
+                                
+                            </td>
+                            <td>
+                                
+                                <span class="insight-tag positive" title="초가스 미드 0/7/1, 킬관여 16.7%. 라인전 CS 63(상대 멜 77)로 14 밀리면서 골드 1081 차이. 피해경감 12K인데 27K 맞았으니 녹는 속도가 장난 아니었을 듯. 한타마다 앞에서 터지면서 팀에 골드만 헌납. 오늘 왜 온 건지 진심 모르겠다.">초가스 미드 0/7/1, 킬관여 16.7%. 라인전 CS 63(상대 멜 77)로 14 밀리면서 골드 1081 차이. 피해경감 12K인데 27K 맞았으니 녹는 속도가 장난 아니었을 듯. 한타마다 앞에서 터지면서 팀에 골드만 헌납. 오늘 왜 온 건지 진심 모르겠다.</span>
+                                
+                            </td>
+                        </tr>
+                        
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </body>
