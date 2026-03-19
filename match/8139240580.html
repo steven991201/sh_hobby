@@ -13,48 +13,53 @@
         .header-inner { max-width: 1080px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; }
         .logo { font-size: 20px; font-weight: 700; color: #5383e8; }
         .logo span { color: #e8e8e8; font-weight: 400; }
-        .back-link { color: #9e9eb1; font-size: 13px; }
+        .back-link { color: #9e9eb1; font-size: 13px; white-space: nowrap; }
         .back-link:hover { color: #e8e8e8; }
 
         .container { max-width: 1080px; margin: 0 auto; padding: 20px; }
 
-        /* 매치 헤더 */
-        .match-header { background: #282830; border-radius: 4px; padding: 20px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+        .match-header { background: #282830; border-radius: 6px; padding: 20px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px; }
         .match-title { font-size: 16px; font-weight: 700; }
         .match-meta { color: #9e9eb1; font-size: 13px; margin-top: 4px; }
-        .match-ai-summary { background: #31313c; padding: 12px 16px; border-radius: 4px; font-size: 13px; line-height: 1.6; }
-        .match-ai-summary .label { color: #5383e8; font-weight: 700; font-size: 12px; margin-bottom: 4px; }
-        .mvp-highlight { display: flex; align-items: center; gap: 8px; background: rgba(240,178,50,0.1); border: 1px solid rgba(240,178,50,0.3); padding: 10px 16px; border-radius: 4px; }
-        .mvp-highlight .badge { background: #f0b232; color: #1c1c1f; font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 10px; }
-        .mvp-highlight .info { font-size: 14px; font-weight: 600; }
-        .mvp-highlight .score { color: #f0b232; font-size: 12px; }
-        .ace-highlight { display: flex; align-items: center; gap: 8px; background: rgba(83,131,232,0.1); border: 1px solid rgba(83,131,232,0.3); padding: 10px 16px; border-radius: 4px; }
-        .ace-highlight .badge { background: #5383e8; color: #fff; font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 10px; }
-        .ace-highlight .info { font-size: 14px; font-weight: 600; }
-        .ace-highlight .score { color: #5383e8; font-size: 12px; }
+        .match-highlights { display: flex; gap: 8px; flex-wrap: wrap; }
 
-        /* 스코어보드 */
+        .match-ai-summary { background: #31313c; padding: 12px 16px; border-radius: 6px; font-size: 13px; line-height: 1.6; margin-bottom: 12px; word-break: keep-all; overflow-wrap: break-word; }
+        .match-ai-summary .label { color: #5383e8; font-weight: 700; font-size: 12px; margin-bottom: 4px; }
+
+        .mvp-highlight { display: flex; align-items: center; gap: 8px; background: rgba(240,178,50,0.1); border: 1px solid rgba(240,178,50,0.3); padding: 10px 14px; border-radius: 6px; flex-wrap: wrap; }
+        .mvp-highlight .badge { background: #f0b232; color: #1c1c1f; font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 10px; white-space: nowrap; }
+        .mvp-highlight .info { font-size: 14px; font-weight: 600; }
+        .mvp-highlight .score { color: #f0b232; font-size: 12px; white-space: nowrap; }
+
+        .ace-highlight { display: flex; align-items: center; gap: 8px; background: rgba(83,131,232,0.1); border: 1px solid rgba(83,131,232,0.3); padding: 10px 14px; border-radius: 6px; flex-wrap: wrap; }
+        .ace-highlight .badge { background: #5383e8; color: #fff; font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 10px; white-space: nowrap; }
+        .ace-highlight .info { font-size: 14px; font-weight: 600; }
+        .ace-highlight .score { color: #5383e8; font-size: 12px; white-space: nowrap; }
+
         .scoreboard { margin-bottom: 12px; }
-        .team-header { padding: 10px 16px; font-size: 13px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
-        .team-header.blue { background: rgba(83,131,232,0.15); color: #5383e8; border-radius: 4px 4px 0 0; }
-        .team-header.red { background: rgba(232,64,87,0.15); color: #e84057; border-radius: 4px 4px 0 0; }
+        .team-header { padding: 10px 16px; font-size: 13px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; }
+        .team-header.blue { background: rgba(83,131,232,0.15); color: #5383e8; border-radius: 6px 6px 0 0; }
+        .team-header.red { background: rgba(232,64,87,0.15); color: #e84057; border-radius: 6px 6px 0 0; }
         .team-header .result { font-size: 12px; padding: 2px 8px; border-radius: 2px; font-weight: 700; }
         .team-header .result.win { background: #5383e8; color: #fff; }
         .team-header .result.loss { background: #e84057; color: #fff; }
 
-        .player-table { width: 100%; border-collapse: collapse; background: #282830; margin-bottom: 12px; }
-        .player-table th { text-align: left; padding: 8px 10px; font-size: 11px; color: #9e9eb1; font-weight: 600; border-bottom: 1px solid #3b3b44; }
+        .table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .player-table { width: 100%; border-collapse: collapse; background: #282830; }
+        .player-table th { text-align: left; padding: 8px 10px; font-size: 11px; color: #9e9eb1; font-weight: 600; border-bottom: 1px solid #3b3b44; white-space: nowrap; }
         .player-table td { padding: 8px 10px; font-size: 12px; border-bottom: 1px solid #31313c; vertical-align: middle; }
         .player-table tr:hover td { background: #31313c; }
         .player-table tr.mvp-row td { background: rgba(240,178,50,0.05); }
+        .player-table tr.ace-row td { background: rgba(83,131,232,0.05); }
 
-        .player-cell { display: flex; align-items: center; gap: 8px; }
-        .champ-icon { width: 32px; height: 32px; border-radius: 50%; }
-        .player-info .name { font-weight: 600; font-size: 13px; }
-        .player-info .champ-name { color: #9e9eb1; font-size: 11px; }
+        .player-cell { display: flex; align-items: center; gap: 8px; min-width: 120px; }
+        .champ-icon { width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0; }
+        .player-info { min-width: 0; }
+        .player-info .name { font-weight: 600; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px; }
+        .player-info .champ-name { color: #9e9eb1; font-size: 11px; white-space: nowrap; }
 
         .kda-cell .ratio { font-weight: 700; font-size: 14px; }
-        .kda-cell .detail { color: #9e9eb1; font-size: 11px; }
+        .kda-cell .detail { color: #9e9eb1; font-size: 11px; white-space: nowrap; }
         .kda-good { color: #5383e8; }
         .kda-great { color: #f0b232; }
         .kda-bad { color: #e84057; }
@@ -70,7 +75,7 @@
         .rank-3 { background: #cd7f32; color: #fff; }
         .rank-other { background: #3b3b44; color: #9e9eb1; }
 
-        .insight-tag { display: inline-block; font-size: 10px; padding: 2px 6px; border-radius: 2px; background: #31313c; color: #9e9eb1; margin: 1px 2px; }
+        .insight-tag { display: inline-block; font-size: 10px; padding: 2px 6px; border-radius: 2px; background: #31313c; color: #9e9eb1; margin: 1px 2px; max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; vertical-align: middle; }
         .insight-tag.positive { background: rgba(83,131,232,0.15); color: #5383e8; }
         .insight-tag.negative { background: rgba(232,64,87,0.1); color: #e84057; }
 
@@ -83,16 +88,33 @@
 
         .mvp-icon { color: #f0b232; font-weight: 700; font-size: 11px; }
         .ace-icon { color: #5383e8; font-weight: 700; font-size: 11px; }
-        tr.ace-row td { background: rgba(83,131,232,0.05); }
 
         @media (max-width: 768px) {
-            .player-table { font-size: 11px; }
-            .player-table th, .player-table td { padding: 6px 4px; }
+            .container { padding: 12px; }
+            .match-header { padding: 14px; gap: 10px; }
+            .match-ai-summary { font-size: 12px; padding: 10px 12px; }
+            .player-table th, .player-table td { padding: 7px 6px; }
             .champ-icon { width: 26px; height: 26px; }
             .hide-mobile { display: none; }
             .damage-bar { width: 50px; }
+            .player-info .name { max-width: 80px; }
+            .insight-tag { max-width: 100px; }
         }
-    </style>
+
+        @media (max-width: 540px) {
+            .player-table th:nth-child(5),
+            .player-table td:nth-child(5) { display: none; }
+            .player-cell { min-width: 90px; }
+            .player-info .name { max-width: 65px; }
+        }
+
+        @media (max-width: 400px) {
+            .player-table th:nth-child(4),
+            .player-table td:nth-child(4) { display: none; }
+            .match-highlights { flex-direction: column; }
+            .mvp-highlight, .ace-highlight { padding: 8px 10px; }
+        }
+</style>
 </head>
 <body>
     <div class="header">
@@ -172,7 +194,7 @@
                 <span>블루팀 (33킬 · 66,696골드)</span>
                 <span class="result win">승리</span>
             </div>
-            <table class="player-table">
+            <div class="table-wrapper"><table class="player-table">
                 <thead>
                     <tr>
                         <th style="width:30px">#</th>
@@ -425,7 +447,7 @@
                     </tr>
                     
                 </tbody>
-            </table>
+            </table></div>
         </div>
 
         <!-- 레드팀 -->
@@ -434,7 +456,7 @@
                 <span>레드팀 (9킬 · 52,960골드)</span>
                 <span class="result loss">패배</span>
             </div>
-            <table class="player-table">
+            <div class="table-wrapper"><table class="player-table">
                 <thead>
                     <tr>
                         <th style="width:30px">#</th>
@@ -687,7 +709,7 @@
                     </tr>
                     
                 </tbody>
-            </table>
+            </table></div>
         </div>
     </div>
 </body>

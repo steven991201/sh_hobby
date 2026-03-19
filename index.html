@@ -17,7 +17,6 @@
 
         .container { max-width: 1080px; margin: 0 auto; padding: 20px; }
 
-        /* 탭 */
         .tabs { display: flex; gap: 0; margin-bottom: 20px; border-bottom: 2px solid #3b3b44; }
         .tab { padding: 12px 24px; cursor: pointer; color: #9e9eb1; font-size: 14px; font-weight: 600; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.2s; }
         .tab.active { color: #5383e8; border-bottom-color: #5383e8; }
@@ -26,41 +25,44 @@
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
-        /* 매치 카드 */
-        .match-card { background: #282830; border-radius: 4px; margin-bottom: 8px; overflow: hidden; cursor: pointer; transition: background 0.15s; }
-        .match-card:hover { background: #31313c; }
+        .match-card { background: #282830; border-radius: 6px; margin-bottom: 8px; overflow: hidden; cursor: pointer; transition: background 0.15s, box-shadow 0.15s; }
+        .match-card:hover { background: #31313c; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
         .match-card-inner { display: flex; align-items: stretch; }
         .match-result { width: 4px; flex-shrink: 0; }
         .match-result.win { background: #5383e8; }
         .match-result.loss { background: #e84057; }
-        .match-body { flex: 1; padding: 12px 16px; }
-        .match-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .match-info { display: flex; gap: 12px; align-items: center; }
-        .match-date { color: #9e9eb1; font-size: 12px; }
-        .match-duration { color: #9e9eb1; font-size: 12px; }
-        .match-summary-text { font-size: 12px; color: #9e9eb1; }
-        .mvp-badge { background: #f0b232; color: #1c1c1f; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 10px; }
+        .match-body { flex: 1; padding: 12px 16px; min-width: 0; }
+
+        .match-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; gap: 8px; flex-wrap: wrap; }
+        .match-info { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; flex: 1; min-width: 0; }
+        .match-date { color: #9e9eb1; font-size: 12px; white-space: nowrap; }
+        .match-duration { color: #9e9eb1; font-size: 12px; white-space: nowrap; }
+        .match-summary-text { font-size: 12px; color: #9e9eb1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 300px; }
+
+        .match-badges { display: flex; gap: 6px; flex-wrap: wrap; flex-shrink: 0; }
+        .mvp-badge { background: #f0b232; color: #1c1c1f; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 10px; white-space: nowrap; }
+        .ace-badge { background: #5383e8; color: #fff; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 10px; white-space: nowrap; }
+
         .match-teams { display: flex; gap: 24px; }
-        .match-team { flex: 1; }
+        .match-team { flex: 1; min-width: 0; }
         .team-label { font-size: 11px; font-weight: 600; margin-bottom: 6px; padding: 2px 8px; border-radius: 2px; display: inline-block; }
         .team-label.blue { color: #5383e8; background: rgba(83,131,232,0.1); }
         .team-label.red { color: #e84057; background: rgba(232,64,87,0.1); }
         .team-label .score { margin-left: 6px; }
         .match-player { display: flex; align-items: center; gap: 6px; padding: 2px 0; font-size: 12px; }
-        .champ-icon { width: 24px; height: 24px; border-radius: 50%; }
-        .player-name { min-width: 80px; color: #e8e8e8; }
-        .player-kda { color: #9e9eb1; min-width: 70px; }
+        .champ-icon { width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0; }
+        .player-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #e8e8e8; }
+        .player-kda { color: #9e9eb1; white-space: nowrap; flex-shrink: 0; }
         .player-kda-value { font-weight: 600; }
         .kda-good { color: #5383e8; }
         .kda-great { color: #f0b232; }
         .kda-bad { color: #e84057; }
-        .player-mvp { font-size: 10px; color: #f0b232; font-weight: 700; }
-    .player-ace { font-size: 10px; color: #5383e8; font-weight: 700; }
-    .ace-badge { background: #5383e8; color: #fff; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 10px; }
+        .player-mvp { font-size: 10px; color: #f0b232; font-weight: 700; flex-shrink: 0; }
+        .player-ace { font-size: 10px; color: #5383e8; font-weight: 700; flex-shrink: 0; }
 
-        /* 플레이어 랭킹 */
-        .ranking-table { width: 100%; border-collapse: collapse; }
-        .ranking-table th { text-align: left; padding: 10px 12px; font-size: 12px; color: #9e9eb1; font-weight: 600; border-bottom: 1px solid #3b3b44; }
+        .ranking-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .ranking-table { width: 100%; border-collapse: collapse; min-width: 600px; }
+        .ranking-table th { text-align: left; padding: 10px 12px; font-size: 12px; color: #9e9eb1; font-weight: 600; border-bottom: 1px solid #3b3b44; white-space: nowrap; }
         .ranking-table td { padding: 10px 12px; font-size: 13px; border-bottom: 1px solid #31313c; }
         .ranking-table tr:hover td { background: #31313c; }
         .rank-num { font-weight: 700; color: #9e9eb1; width: 30px; }
@@ -80,20 +82,34 @@
         .winrate-fill { display: block; height: 100%; border-radius: 3px; background: #5383e8; }
         .winrate-bg { background: #e84057; border-radius: 3px; }
         .insights-list { list-style: none; margin-top: 4px; }
-        .insights-list li { font-size: 11px; color: #9e9eb1; padding: 1px 0; }
+        .insights-list li { font-size: 11px; color: #9e9eb1; padding: 1px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px; }
         .insights-list li::before { content: "▸ "; color: #5383e8; }
 
         .stat-highlight { color: #5383e8; font-weight: 600; }
         .stat-warn { color: #e84057; }
 
-        /* 반응형 */
         @media (max-width: 768px) {
+            .container { padding: 12px; }
+            .tab { padding: 10px 16px; font-size: 13px; }
+            .match-body { padding: 10px 12px; }
+            .match-header { gap: 6px; }
+            .match-summary-text { display: none; }
             .match-teams { flex-direction: column; gap: 8px; }
+            .match-badges { gap: 4px; }
+            .mvp-badge, .ace-badge { font-size: 10px; padding: 2px 6px; }
             .ranking-table { font-size: 12px; }
             .ranking-table th, .ranking-table td { padding: 8px 6px; }
             .hide-mobile { display: none; }
+            .insights-list li { max-width: 120px; }
         }
-    </style>
+
+        @media (max-width: 480px) {
+            .header-inner { flex-direction: column; align-items: flex-start; gap: 4px; }
+            .match-info { gap: 6px; }
+            .match-player { gap: 4px; font-size: 11px; }
+            .champ-icon { width: 20px; height: 20px; }
+        }
+</style>
 </head>
 <body>
     <div class="header">
@@ -105,8 +121,9 @@
 
     <div class="container">
         <div class="tabs">
-            <div class="tab active" onclick="switchTab('matches')">매치 기록</div>
-            <div class="tab" onclick="switchTab('rankings')">플레이어 랭킹</div>
+            <div class="tab active" onclick="switchTab('matches', this)">매치 기록</div>
+            <div class="tab" onclick="switchTab('rankings', this)">플레이어 랭킹</div>
+            <div class="tab" onclick="switchTab('draw', this)">팀 뽑기 🎲</div>
         </div>
 
         <!-- 매치 기록 -->
@@ -116,14 +133,14 @@
             <div class="match-card">
                 <div class="match-card-inner">
                     <div class="match-result loss"></div>
-                    <div class="match-body">
+                    <div class="match-body" style="min-width:0">
                         <div class="match-header">
                             <div class="match-info">
                                 <span class="match-date">03/19 02:55</span>
                                 <span class="match-duration">35분 51초</span>
                                 <span class="match-summary-text">25분까지 블루팀이 3K 리드로 우세했던 경기. 25분에 블루팀이 한타3+한타4 연승하면서 1.1K까지 앞섰는데, 28.7분 한타5에서 목표는아름관 시비르가 더블킬+황승현 리신이 더블킬로 4킬 따면서 역전. 이후 31분 바론 확보하고 32분 한타에서 시비르 쿼드라킬로 블루팀 궤멸. 35.5분 마지막 한타에서 시비르 트리플킬로 서렌더. 후반 역전극의 교과서.</span>
                             </div>
-                            <div>
+                            <div class="match-badges">
                                 <span class="mvp-badge">MVP 목표는아름관 (시비르)</span>
                                 
                                 <span class="ace-badge">ACE 고독한 숟 (바이)</span>
@@ -275,14 +292,14 @@
             <div class="match-card">
                 <div class="match-card-inner">
                     <div class="match-result win"></div>
-                    <div class="match-body">
+                    <div class="match-body" style="min-width:0">
                         <div class="match-header">
                             <div class="match-info">
                                 <span class="match-date">03/19 00:22</span>
                                 <span class="match-duration">32분 49초</span>
                                 <span class="match-summary-text">10분까지 레드팀이 1.4K 리드했는데, 15.3분 한타에서 목표는아름관 리산드라+고독한 숟 케이틀린이 5킬 몰살시키면서 단번에 역전. 이후 블루팀이 한타 6번 중 5번을 이기면서 일방적으로 밀어붙임. 30분에 골드 차이 10.8K. 케이틀린 분당딜 1430은 내전 역대급 수치. 레드팀이 10분 리드를 5분 만에 다 날린 게 아쉽다.</span>
                             </div>
-                            <div>
+                            <div class="match-badges">
                                 <span class="mvp-badge">MVP 고독한 숟 (케이틀린)</span>
                                 
                                 <span class="ace-badge">ACE 황승현 (라칸)</span>
@@ -434,14 +451,14 @@
             <div class="match-card">
                 <div class="match-card-inner">
                     <div class="match-result win"></div>
-                    <div class="match-body">
+                    <div class="match-body" style="min-width:0">
                         <div class="match-header">
                             <div class="match-info">
                                 <span class="match-date">03/18 23:32</span>
                                 <span class="match-duration">34분 3초</span>
                                 <span class="match-summary-text">골드 역전 8회! 내전 역대 최다 역전 기록. 10분까지 레드팀 1.2K 리드, 15분에도 레드 907 리드로 전반부는 레드팀 우세. 그런데 21분부터 블루팀이 역전하면서 25분에 3.7K, 30분에 7.7K까지 벌림. 핵심은 24~25분 구간. 한타3+한타4에서 블루팀이 연달아 승리하면서 바론+타워 다 뽑아먹었다. 레드팀 고독한 숟 자야가 혼자 분전했지만 팀이 못 받쳐줌.</span>
                             </div>
-                            <div>
+                            <div class="match-badges">
                                 <span class="mvp-badge">MVP 심신수양 (사일러스)</span>
                                 
                                 <span class="ace-badge">ACE 고독한 숟 (자야)</span>
@@ -593,14 +610,14 @@
             <div class="match-card">
                 <div class="match-card-inner">
                     <div class="match-result win"></div>
-                    <div class="match-body">
+                    <div class="match-body" style="min-width:0">
                         <div class="match-header">
                             <div class="match-info">
                                 <span class="match-date">03/18 22:46</span>
                                 <span class="match-duration">30분 37초</span>
                                 <span class="match-summary-text">더블 퍼펙트의 전설. JustLikeThatKB 신짜오 11/0/11, 고독한 숟 트리스타나 13/0/5. 두 명이 동시에 0데스 퍼펙트 달성. 5분부터 블루팀이 리드하기 시작해서 15분에 5K, 25분에 8.8K, 30분에 13.4K까지 벌어짐. 한타 5번 전부 블루팀 승리. 레드팀이 이긴 한타가 단 한 번도 없다. 완전한 학살극.</span>
                             </div>
-                            <div>
+                            <div class="match-badges">
                                 <span class="mvp-badge">MVP JustLikeThatKB (신 짜오)</span>
                                 
                                 <span class="ace-badge">ACE 황승현 (마오카이)</span>
@@ -752,14 +769,14 @@
             <div class="match-card">
                 <div class="match-card-inner">
                     <div class="match-result win"></div>
-                    <div class="match-body">
+                    <div class="match-body" style="min-width:0">
                         <div class="match-header">
                             <div class="match-info">
                                 <span class="match-date">03/14 02:45</span>
                                 <span class="match-duration">33분 43초</span>
                                 <span class="match-summary-text">골드 역전 4회의 시소게임. 15분까지 블루팀이 2K 리드했는데 19분 한타에서 레드팀이 3킬 따면서 20분에 레드팀 역전. 25분까지 레드팀이 1.2K 리드를 유지하다가 28.5분 한타에서 황승현 트리스타나가 트리플킬 터뜨리면서 게임이 뒤집힘. 32.7분 마지막 한타에서도 트리스타나 쿼드라킬로 마무리. 역전의 주인공은 명확하다.</span>
                             </div>
-                            <div>
+                            <div class="match-badges">
                                 <span class="mvp-badge">MVP 황승현 (트리스타나)</span>
                                 
                                 <span class="ace-badge">ACE 고독한 숟 (라칸)</span>
@@ -911,14 +928,14 @@
             <div class="match-card">
                 <div class="match-card-inner">
                     <div class="match-result win"></div>
-                    <div class="match-body">
+                    <div class="match-body" style="min-width:0">
                         <div class="match-header">
                             <div class="match-info">
                                 <span class="match-date">03/14 02:06</span>
                                 <span class="match-duration">22분 24초</span>
                                 <span class="match-summary-text">시작부터 블루팀이 잡았다. 5분에 이미 777골드 리드, 10분에 1.7K, 15분에 6K까지 벌어지더니 22분 서렌더. 초전도웃음 미스포츈이 10/0/4 퍼펙트 캐리하는 동안 레드팀 고독한 도구라인 초가스가 0/7/1로 녹아내리면서 미드가 완전히 뚫림. 레드팀이 이길 수 있는 구간이 단 한 번도 없었던 일방적인 경기.</span>
                             </div>
-                            <div>
+                            <div class="match-badges">
                                 <span class="mvp-badge">MVP 초전도웃음 (미스 포츈)</span>
                                 
                                 <span class="ace-badge">ACE 목표는아름관 (사이온)</span>
@@ -1070,14 +1087,14 @@
             <div class="match-card">
                 <div class="match-card-inner">
                     <div class="match-result win"></div>
-                    <div class="match-body">
+                    <div class="match-body" style="min-width:0">
                         <div class="match-header">
                             <div class="match-info">
                                 <span class="match-date">03/14 01:12</span>
                                 <span class="match-duration">30분 39초</span>
                                 <span class="match-summary-text">초반 레드팀이 퍼스트블러드+잭스 중심으로 리드했는데, 7분 한타에서 블루팀이 3킬 몰살 성공하면서 분위기 역전. 이후 블루팀이 한타를 연속으로 이기면서 25분에 9.5K 골드 차이까지 벌림. 28.7분 마지막 한타에서 레드팀이 4킬 따면서 반격 시도했지만, 이미 격차가 너무 컸다. 황승현 자야+탐켄치 탱킹 조합이 핵심이었고, 목표는아름관 마오카이가 시야+CC로 팀을 완성시켰다.</span>
                             </div>
-                            <div>
+                            <div class="match-badges">
                                 <span class="mvp-badge">MVP 목표는아름관 (마오카이)</span>
                                 
                                 <span class="ace-badge">ACE 고독한 숟 (자르반 4세)</span>
@@ -1229,14 +1246,14 @@
             <div class="match-card">
                 <div class="match-card-inner">
                     <div class="match-result loss"></div>
-                    <div class="match-body">
+                    <div class="match-body" style="min-width:0">
                         <div class="match-header">
                             <div class="match-info">
                                 <span class="match-date">03/14 00:06</span>
                                 <span class="match-duration">26분 1초</span>
                                 <span class="match-summary-text">10분까지 블루팀이 1K 리드로 앞섰는데, 13분 한타에서 레드팀이 3킬 몰살 성공하면서 역전. 이후 고독한 미드라인 요릭이 스플릿으로 타워를 씹어먹기 시작하면서 15분부터 게임이 끝났다. 20분에 골드 차이 8.3K, 결국 26분 서렌더. 초전도웃음 바루스가 혼자 분전했지만 팀이 너무 못 받쳐줬다.</span>
                             </div>
-                            <div>
+                            <div class="match-badges">
                                 <span class="mvp-badge">MVP 고독한 미드라인 (요릭)</span>
                                 
                                 <span class="ace-badge">ACE 초전도웃음 (바루스)</span>
@@ -1388,14 +1405,14 @@
             <div class="match-card">
                 <div class="match-card-inner">
                     <div class="match-result win"></div>
-                    <div class="match-body">
+                    <div class="match-body" style="min-width:0">
                         <div class="match-header">
                             <div class="match-info">
                                 <span class="match-date">03/13 23:26</span>
                                 <span class="match-duration">25분 3초</span>
                                 <span class="match-summary-text">고독한정글동선 피즈의 원맨쇼. 4분 한타에서 퍼스트블러드 따고 시작해서 25분까지 12킬 0데스 달성. 5분에 이미 1.5K 골드 리드, 10분에 3.3K, 20분에 6.6K까지 벌어지더니 25분에 12K 차이로 서렌더. 레드팀이 한 게 딱히 없다. 한타 2번 다 블루팀이 이기고, 오브젝트도 전부 블루팀이 먹었다. 그냥 학살이었다.</span>
                             </div>
-                            <div>
+                            <div class="match-badges">
                                 <span class="mvp-badge">MVP 고독한정글동선 (피즈)</span>
                                 
                                 <span class="ace-badge">ACE 태연민 (노틸러스)</span>
@@ -1547,14 +1564,14 @@
             <div class="match-card">
                 <div class="match-card-inner">
                     <div class="match-result loss"></div>
-                    <div class="match-body">
+                    <div class="match-body" style="min-width:0">
                         <div class="match-header">
                             <div class="match-info">
                                 <span class="match-date">02/23 20:33</span>
                                 <span class="match-duration">37분 49초</span>
                                 <span class="match-summary-text">골드 역전만 5번, 한타 9번의 피 튀기는 혈전. 10분까지 골드 거의 동률이었는데 14분 이후 레드팀이 오브젝트 장악하면서 꾸준히 리드. 32분에 블루팀이 미스포츈 트리플킬+바론으로 역전 분위기 만들었는데, 36.7분 마지막 한타에서 황승현 자야+볼리베어가 블루팀 5명 전멸시키면서 넥서스 직행. 블루팀 입장에서 바론까지 먹고 못 끝낸 게 한이 맺힐 듯.</span>
                             </div>
-                            <div>
+                            <div class="match-badges">
                                 <span class="mvp-badge">MVP 황승현 (자야)</span>
                                 
                                 <span class="ace-badge">ACE 고독한정글동선 (모르가나)</span>
@@ -1706,7 +1723,7 @@
 
         <!-- 플레이어 랭킹 -->
         <div id="tab-rankings" class="tab-content">
-            <table class="ranking-table">
+            <div class="ranking-wrapper"><table class="ranking-table">
                 <thead>
                     <tr>
                         <th>#</th>
@@ -2484,14 +2501,235 @@
                 </tbody>
             </table>
         </div>
+
+        <!-- 팀 뽑기 -->
+        <div id="tab-draw" class="tab-content">
+            <div class="draw-topbar">
+                <div id="draw-status" class="draw-status">팀 뽑기 탭을 클릭하면 데이터를 불러옵니다.</div>
+                <button class="refresh-btn" onclick="loadDrawData()">↻ 새로고침</button>
+            </div>
+            <div id="player-grid" class="player-grid">
+                <div class="draw-loading">데이터 로딩 중...</div>
+            </div>
+            <button id="draw-btn" class="draw-btn" onclick="runDraw()">팀 뽑기 🎲</button>
+            <div id="draw-result"></div>
+        </div>
     </div>
 
     <script>
-    function switchTab(tab) {
+    function switchTab(tab, el) {
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-        event.target.classList.add('active');
+        el.classList.add('active');
         document.getElementById('tab-' + tab).classList.add('active');
+        if (tab === 'draw' && drawPlayers.length === 0) loadDrawData();
+    }
+
+    // ── 팀 뽑기 ──────────────────────────────────────────────
+    const SHEET_ID = '1iaIldNlX5rEFBMCvEBNkB1BdhWbCrPLdad3DF21ksYo';
+    const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=0`;
+    const ROLES = ['탑', '정글', '미드', '원딜', '서폿'];
+    const MAX_DIFF = 2;
+
+    let drawScores = {};
+    let drawPlayers = [];
+
+    async function loadDrawData() {
+        const status = document.getElementById('draw-status');
+        const grid = document.getElementById('player-grid');
+        status.className = 'draw-status';
+        status.textContent = '스프레드시트 불러오는 중...';
+        grid.innerHTML = '<div class="draw-loading">데이터 로딩 중...</div>';
+        try {
+            const res = await fetch(CSV_URL);
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            const text = await res.text();
+            const lines = text.trim().split(/\r?\n/);
+            drawScores = {};
+            drawPlayers = [];
+            for (let i = 1; i < lines.length; i++) {
+                const row = lines[i].split(',').map(s => s.replace(/^"|"$/g, '').trim());
+                if (!row[0]) break;
+                const name = row[0];
+                drawScores[name] = {
+                    '탑': parseInt(row[1]) || 0,
+                    '정글': parseInt(row[2]) || 0,
+                    '미드': parseInt(row[3]) || 0,
+                    '원딜': parseInt(row[4]) || 0,
+                    '서폿': parseInt(row[5]) || 0,
+                };
+                drawPlayers.push(name);
+            }
+            renderPlayerGrid();
+            status.textContent = `✓ ${drawPlayers.length}명 로드됨 · 점수차 ${MAX_DIFF}점 이하로 매칭`;
+        } catch(e) {
+            status.className = 'draw-status error';
+            status.textContent = '❌ 데이터 불러오기 실패 — 새로고침을 눌러주세요';
+            grid.innerHTML = '';
+        }
+    }
+
+    function renderPlayerGrid() {
+        const grid = document.getElementById('player-grid');
+        grid.innerHTML = '';
+        for (const name of drawPlayers) {
+            const sc = drawScores[name];
+            const bestScore = Math.max(...ROLES.map(r => sc[r]));
+            const chipsHtml = ROLES.map(r => {
+                const isBest = sc[r] === bestScore;
+                return `<span class="score-chip${isBest ? ' best' : ''}">${r[0]}${sc[r]}</span>`;
+            }).join('');
+            const optionsHtml = ROLES.map(r => `<option value="${r}">${r}</option>`).join('');
+
+            const card = document.createElement('div');
+            card.className = 'player-card playing';
+            card.dataset.name = name;
+            card.innerHTML = `
+                <div class="player-card-name">
+                    ${name}
+                    <span class="sitting-label" id="sit-label-${name}"></span>
+                </div>
+                <div class="score-chips">${chipsHtml}</div>
+                <select class="role-fix-select" data-name="${name}" title="라인 고정">
+                    <option value="">자유</option>
+                    ${optionsHtml}
+                </select>`;
+            card.addEventListener('click', (e) => {
+                if (e.target.tagName === 'SELECT' || e.target.tagName === 'OPTION') return;
+                const isPlaying = card.classList.contains('playing');
+                card.classList.toggle('playing', !isPlaying);
+                card.classList.toggle('sitting', isPlaying);
+                document.getElementById('sit-label-' + name).textContent = isPlaying ? '(쉬는중)' : '';
+            });
+            grid.appendChild(card);
+        }
+    }
+
+    function getActivePlayers() {
+        return Array.from(document.querySelectorAll('.player-card.playing')).map(c => c.dataset.name);
+    }
+
+    function getFixedRoles() {
+        const fixed = {};
+        document.querySelectorAll('.role-fix-select').forEach(sel => {
+            if (sel.value) fixed[sel.dataset.name] = sel.value;
+        });
+        return fixed;
+    }
+
+    function shuffle(arr) {
+        const a = [...arr];
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+    }
+
+    function buildTeam(members, fixedMap) {
+        const team = new Array(5).fill(null);
+        const free = [];
+        for (const p of members) {
+            if (fixedMap[p]) {
+                const idx = ROLES.indexOf(fixedMap[p]);
+                if (team[idx] !== null) return null;
+                team[idx] = p;
+            } else {
+                free.push(p);
+            }
+        }
+        const sf = shuffle(free);
+        let fi = 0;
+        for (let i = 0; i < 5; i++) {
+            if (team[i] === null) {
+                if (fi >= sf.length) return null;
+                team[i] = sf[fi++];
+            }
+        }
+        return team;
+    }
+
+    function calcScore(team) {
+        return ROLES.reduce((s, r, i) => s + (drawScores[team[i]]?.[r] || 0), 0);
+    }
+
+    function runDraw() {
+        if (drawPlayers.length === 0) { alert('먼저 데이터를 불러주세요.'); return; }
+        const players = getActivePlayers();
+        const fixedMap = getFixedRoles();
+        for (const k of Object.keys(fixedMap)) {
+            if (!players.includes(k)) delete fixedMap[k];
+        }
+        if (players.length < 10) {
+            alert(`참가 인원이 ${players.length}명입니다. 최소 10명이 필요합니다.`);
+            return;
+        }
+        const btn = document.getElementById('draw-btn');
+        btn.disabled = true;
+        btn.textContent = '뽑는 중...';
+        setTimeout(() => {
+            let result = null;
+            for (let attempt = 0; attempt < 100000; attempt++) {
+                const sh = shuffle(players);
+                const extraSit = sh.slice(10);
+                const picked = sh.slice(0, 10);
+                const teamA = buildTeam(picked.slice(0, 5), fixedMap);
+                const teamB = buildTeam(picked.slice(5, 10), fixedMap);
+                if (!teamA || !teamB) continue;
+                const sA = calcScore(teamA);
+                const sB = calcScore(teamB);
+                if (Math.abs(sA - sB) <= MAX_DIFF) {
+                    result = { teamA, teamB, sA, sB, extraSit, attempt: attempt + 1, fixedMap };
+                    break;
+                }
+            }
+            btn.disabled = false;
+            btn.textContent = '다시 뽑기 🎲';
+            if (!result) {
+                document.getElementById('draw-result').innerHTML =
+                    '<div style="color:#e84057;text-align:center;padding:24px">조건에 맞는 조합을 찾지 못했습니다.<br><span style="font-size:12px;color:#9e9eb1">고정 라인을 줄이거나 참가 인원을 확인해주세요</span></div>';
+                return;
+            }
+            renderDrawResult(result);
+        }, 20);
+    }
+
+    function renderDrawResult({ teamA, teamB, sA, sB, extraSit, attempt, fixedMap }) {
+        function teamHtml(team, score, cls, other) {
+            const label = cls === 'blue' ? '🔵 TEAM A' : '🔴 TEAM B';
+            const rows = ROLES.map((role, i) => {
+                const p = team[i];
+                const myS = drawScores[p]?.[role] || 0;
+                const theirS = drawScores[other[i]]?.[role] || 0;
+                const feast = myS - theirS >= 3 ? '<span class="result-feast">외식^^</span>' : '';
+                const lock = fixedMap[p] ? '<span class="result-lock">🔒</span>' : '';
+                return `<div class="result-player-row">
+                    <span class="result-role">${role}</span>
+                    <span class="result-player-name">${p}${lock}</span>
+                    <span class="result-player-score">${myS}점${feast}</span>
+                </div>`;
+            }).join('');
+            return `<div class="result-team">
+                <div class="result-team-header ${cls}">
+                    <span>${label}</span>
+                    <span class="result-team-total">총점 ${score}</span>
+                </div>${rows}
+            </div>`;
+        }
+        const sittingCards = Array.from(document.querySelectorAll('.player-card.sitting')).map(c => c.dataset.name);
+        const allSitting = [...new Set([...sittingCards, ...extraSit])];
+        let html = `<div class="draw-result">`;
+        html += `<div class="result-attempt">${attempt.toLocaleString()}번째 시도에서 매칭 성공</div>`;
+        html += `<div class="result-teams">
+            ${teamHtml(teamA, sA, 'blue', teamB)}
+            ${teamHtml(teamB, sB, 'red', teamA)}
+        </div>`;
+        html += `<div class="result-diff">점수차 <strong>${Math.abs(sA - sB)}점</strong></div>`;
+        if (allSitting.length > 0) {
+            html += `<div class="result-sitting">⬜ 나가있어: <span>${allSitting.join(', ')}</span></div>`;
+        }
+        html += `</div>`;
+        document.getElementById('draw-result').innerHTML = html;
     }
     </script>
 </body>
